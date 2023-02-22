@@ -74,7 +74,19 @@ class EnvBank:
         else:
             raise ValueError(f"There is no Env in such name: {file}")
     
+if __name__ == '__main__':
 
+    test_eb = EnvBank(
+            name='test_eb', 
+            subscription_id = 'tst12345',
+            resource_group = 'test_res_group',
+            build_id= '1234567',
+            workspace_name = 'test_wspace',
+            environment_name='test_env_name',
+            tenant_id='test_tenant_id'
+            )
+
+    test_eb.save('superpass')
 
 
 
