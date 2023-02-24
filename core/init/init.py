@@ -58,6 +58,11 @@ class EnvBank:
                     return None
                 else:
                     print(f"Incorrect command: {r}. Enter y or n .")
+        else:
+            with open(file, '+x') as f:
+                f.write(encoded_env)
+                print(f"Env saved as '{file}'")
+
 
     @staticmethod
     def load(name: str, password: str):
@@ -89,6 +94,19 @@ if __name__ == '__main__':
     test_eb.save('superpass')
 
 
+
+class InitPipe:
+    def __init__(self, pipe_name: str, dot_env, read_me):
+        self.args_validator(pipe_name, dot_env, read_me)
+        InitCreator(pipe_name, dot_env, read_me)
+
+    def args_validator(self, name, dotenv, rdme):
+        if not isinstance(name, str) or len(name.strip()) < 5:
+            raise ValueError(f"Incorrect value for argument 'name': {name} of type {type(name)}. Name must be string with min len of 5 chars")
+        if dotenv not in (0, 1, None):
+            raise ValueError(f"Incorrect value for argument 'dotenv': {dotenv} of type {type(dotenv)}. Arg must be in [None, 0, 1].")
+        if rdme not in (0, 1, None):
+            raise ValueError(f"Incorrect value for argument 'readme': {rdme} of type {type(rdme)}. Arg must be in [None, 0, 1].")
 
 
 

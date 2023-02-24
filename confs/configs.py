@@ -1,6 +1,5 @@
+#!Python 3.9.16
+# config constants
 
-
-
-
-BASE_DIR = "amlctor"
-BANK_DIR = f"{BASE_DIR}/confs/env_bank"
+BASE_DIR = "aml_constructor"
+BANK_DIR = f"confs/ebs"
