@@ -25,7 +25,7 @@ class TestEnvBank(TestCase):
         password = 'superpass'
         self.eb.save(password=password)
 
-        path = f"{BANK_DIR}/{self.eb.name}.acc"
+        path = f"{BANK_DIR}/{self.eb.name}.e"
         self.assertTrue(os.path.exists(path))
     
 
