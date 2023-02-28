@@ -7,6 +7,7 @@ import pydantic
 from confs.configs import BANK_DIR, BASE_DIR
 
 
+
 class EnvBank:
     def __init__(self, name: str, subscription_id: str, resource_group: str, build_id: str,
                  workspace_name: str, environment_name: str, tenant_id: str):
@@ -20,12 +21,26 @@ class EnvBank:
         self.environment_name = environment_name
         self.tenant_id = tenant_id
 
+
+
+    def as_dict(self) -> dict:
+        d = {'name': self.name,
+            'subscription_id': self.subscription_id ,
+            'resource_group': self.resource_group,
+            'build_id': self.build_id,
+            'workspace_name': self.workspace_name ,
+            'environment_name': self.environment_name ,
+            'tenant_id': self.tenant_id}
+        return d
+
+
     @staticmethod
     def valid_name(name: str):
         if not name.isidentifier():
             raise ValueError("Env name must be identifier - as variable name.")
 
         return True
+
 
     def encoder(self, password):
         d = {
@@ -40,6 +55,7 @@ class EnvBank:
         encoded_bytes = base64.b64encode(message_bytes + password_bytes)
         encoded_message = encoded_bytes.decode('utf-8')
         return encoded_message
+
 
     @staticmethod
     def try_parse_env(json_str):
@@ -137,7 +153,6 @@ class InitHandler:
 
 
 if __name__ == '__main__':
-    from pathlib import Path
 
     test_eb = EnvBank(
         name='test_eb',
