@@ -1,5 +1,6 @@
-from core.init.args_handling import parse_args, handle_args
+from core.init.args_handling import parse_args, ArgsHandler
 
 if __name__ == '__main__':
     args = parse_args()
-    handle_args(args)
+    # ArgsHandler(args).launch()
+    print(args)

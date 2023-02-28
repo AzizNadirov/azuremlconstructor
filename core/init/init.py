@@ -125,6 +125,17 @@ class EnvBank:
             raise ValueError(f"There is no Env in such name: {file}")
 
 
+class InitHandler:
+    def __init__(self, name: str, path: str, env: EnvBank):
+        self.name = name
+        self.path = path
+        self.env = env
+
+    def create_structure(self):
+        pass
+
+
+
 if __name__ == '__main__':
     from pathlib import Path
 

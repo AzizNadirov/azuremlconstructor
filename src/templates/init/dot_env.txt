@@ -1,8 +1,6 @@
-# Azure Subscription Variables
 SUBSCRIPTION_ID = {{subscription_id}}
 RESOURCE_GROUP = {{resource_group}}
 
-# Mock build/release ID for local testing
 BUILD_BUILDID = {{build_id}}
 
 # Azure ML Workspace Variables

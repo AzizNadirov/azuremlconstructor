@@ -1,6 +1,5 @@
 from argparse import ArgumentParser, Namespace
-import os
-import pathlib
+from pathlib import Path 
 import re
 
 from core.init.init import EnvBank
@@ -82,9 +81,9 @@ class ArgsHandler:
     @staticmethod
     def valid_path(path: str) -> str:
         if path.strip() == '.':
-            return os.getcwd()
+            return Path.cwd()
 
-        path = pathlib.Path(path)
+        path = Path(path)
         if not path.exists():
             raise ValueError(f'specified path does not exist: \n{path}')
         return path
@@ -96,7 +95,7 @@ class ArgsHandler:
         if not name.isidentifier():
             raise ValueError(f"env name must be identifier.")
         path = f"{BANK_DIR}/{name}.e"
-        path = pathlib.Path(path)
+        path = Path(path)
         if not path.exists():
             files = path.glob('*.e')
             files = [file.name for file in files if file.is_file()]
@@ -105,7 +104,7 @@ class ArgsHandler:
             password_attempts = 3
             while True:
                 password = input(f"Enter password for env {name}: ")
-                eb = EnvBank.load(name)
+                eb = EnvBank.load(name, password)
                 if isinstance(eb, EnvBank):
                     return eb
 
@@ -127,25 +126,29 @@ class ArgsHandler:
         command = self.args.command
         if command == 'init':
             """ init -n  -p  -e """
-            name = ArgsHandler.valid_pipe_name(self.args.name)
-            path = ArgsHandler.valid_path(self.args.path)
-            env = ArgsHandler.valid_select_env(self.args.env)
+            name: str =     ArgsHandler.valid_pipe_name(self.args.name)
+            path: Path =    ArgsHandler.valid_path(self.args.path)
+            env: EnvBank =  ArgsHandler.valid_select_env(self.args.env)
 
         elif command == 'apply':
             """ apply -n  -p  -e """
-            path = ArgsHandler.valid_path(self.args.path)
+            path: Path =    ArgsHandler.valid_path(self.args.path)
 
         elif command == 'run':
             """ init -p """
-            path = ArgsHandler.valid_path(self.args.path)
+            path: Path =    ArgsHandler.valid_path(self.args.path)
 
         elif command == 'rename':
             """ rename  -p -o -n -x"""
-            path = ArgsHandler.valid_path(self.args.path)
+            path: Path =    ArgsHandler.valid_path(self.args.path)
             # TODO implement rename
 
         else:
             raise SystemExit(1)
+
+    def launch(self):
+        self.valid_args()
+
 
 
 if __name__ == '__main__':
