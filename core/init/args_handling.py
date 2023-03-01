@@ -45,7 +45,9 @@ def parse_args():
     return args
 
 
+
 class ArgsHandler:
+
     COMMANDS: tuple = ('init', 'apply', 'run', 'build')
 
     def __init__(self, args: Namespace):
@@ -64,9 +66,9 @@ class ArgsHandler:
 
         # len 
         name = name.strip()
-        if MIN_LEN < len(name) < MAX_LEN:
+        if not MIN_LEN < len(name) < MAX_LEN:
             raise ValueError(
-                f"Pipeline name length must be between {MIN_LEN}(Recommend minimal length: {MIN_LEN_RECOMMENDED}) and {MAX_LEN}")
+                f"Pipeline name length must be between {MIN_LEN}(Recommend minimal length: {MIN_LEN_RECOMMENDED}) and {MAX_LEN}: {name}")
 
         # content: letters, digits, - and _  allowed.
         if not re.match(CONTENT_RE_PATTERN, name):
@@ -88,12 +90,17 @@ class ArgsHandler:
             raise ValueError(f'specified path does not exist: \n{path}')
         return path
 
+
     @staticmethod
     def valid_select_env(name: str) -> EnvBank:
         from confs.configs import BANK_DIR
 
+        if name is None:    # env not passed
+            return None
+        
         if not name.isidentifier():
             raise ValueError(f"env name must be identifier.")
+        
         path = f"{BANK_DIR}/{name}.e"
         path = Path(path)
         if not path.exists():
@@ -120,23 +127,27 @@ class ArgsHandler:
                     else:
                         raise SystemExit(1)
 
+
     def valid_args(self):
         assert hasattr(self.args,
                        'command') and self.args.command in ArgsHandler.COMMANDS, f"Incorrect command: {self.args.command}"
         command = self.args.command
         if command == 'init':
             """ init -n  -p  -e """
+            from .init import InitHandler
+
             name: str =     ArgsHandler.valid_pipe_name(self.args.name)
             path: Path =    ArgsHandler.valid_path(self.args.path)
             env: EnvBank =  ArgsHandler.valid_select_env(self.args.env)
+            handler = InitHandler(name=name, path=path, env=env)
 
         elif command == 'apply':
-            """ apply -n  -p  -e """
-            path: Path =    ArgsHandler.valid_path(self.args.path)
+            """ apply -p """
+            path: Path =    ArgsHandler.valid_path(self.args.path)  # check only for existence
 
         elif command == 'run':
             """ init -p """
-            path: Path =    ArgsHandler.valid_path(self.args.path)
+            path: Path =    ArgsHandler.valid_path(self.args.path)  # check only for existence
 
         elif command == 'rename':
             """ rename  -p -o -n -x"""
@@ -145,9 +156,13 @@ class ArgsHandler:
 
         else:
             raise SystemExit(1)
+        
+        return handler
 
     def launch(self):
-        self.valid_args()
+        handler = self.valid_args()
+        handler.start()
+
 
 
 

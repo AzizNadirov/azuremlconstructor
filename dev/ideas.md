@@ -17,3 +17,5 @@
 
     PathInput:
         add `upload` method, which will take file and upload it to the remote path.
+
+5. Add ability to create templates

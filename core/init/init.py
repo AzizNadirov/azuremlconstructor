@@ -6,6 +6,7 @@ import pydantic
 
 from confs.configs import BANK_DIR, BASE_DIR
 
+from .init_structure import StructureInit
 
 
 class EnvBank:
@@ -147,8 +148,8 @@ class InitHandler:
         self.path = path
         self.env = env
 
-    def create_structure(self):
-        pass
+    def start(self):
+        StructureInit(pipe_name=self.name, path=self.path, env=self.env).start()
 
 
 

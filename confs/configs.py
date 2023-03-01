@@ -2,7 +2,7 @@
 # config constants
 import os
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath('__file__')), '..', '..'))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath('__file__'))))
 BANK_DIR = f"{BASE_DIR}/confs/ebs"
 
 TEMPLATES_DIR = f"{BASE_DIR}/src/templates"
