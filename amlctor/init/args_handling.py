@@ -53,6 +53,7 @@ class ArgsHandler:
     def __init__(self, args: Namespace):
         self.args = args
 
+
     @staticmethod
     def valid_pipe_name(name: str) -> str:
         MIN_LEN = 1
@@ -128,10 +129,15 @@ class ArgsHandler:
                         raise SystemExit(1)
 
 
+
     def valid_args(self):
+        """ validates args and returns correspondig handler instance """
+
         assert hasattr(self.args,
                        'command') and self.args.command in ArgsHandler.COMMANDS, f"Incorrect command: {self.args.command}"
         command = self.args.command
+
+
         if command == 'init':
             """ init -n  -p  -e """
             from .init import InitHandler
@@ -141,13 +147,22 @@ class ArgsHandler:
             env: EnvBank =  ArgsHandler.valid_select_env(self.args.env)
             handler = InitHandler(name=name, path=path, env=env)
 
+
         elif command == 'apply':
             """ apply -p """
+            from amlctor.apply.apply import ApplyHandler
+
             path: Path =    ArgsHandler.valid_path(self.args.path)  # check only for existence
+            handler = ApplyHandler(path=path)
+
 
         elif command == 'run':
             """ init -p """
+            from amlctor.run.run import RunHandler
+
             path: Path =    ArgsHandler.valid_path(self.args.path)  # check only for existence
+            handler = RunHandler(path=path)
+
 
         elif command == 'rename':
             """ rename  -p -o -n -x"""
@@ -159,7 +174,10 @@ class ArgsHandler:
         
         return handler
 
+
+
     def launch(self):
+        """ Lounchs arg validation and starts handler """
         handler = self.valid_args()
         handler.start()
 

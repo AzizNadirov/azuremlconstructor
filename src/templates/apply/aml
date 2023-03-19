@@ -1,0 +1,13 @@
+# Loading input data
+{% for k in keys %}
+from .{{dataloader_name}} import {{k}}
+{% endfor %}
+
+
+# feel free yourself for do some magic...
+
+
+
+
+
+

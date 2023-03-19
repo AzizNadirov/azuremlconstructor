@@ -1,0 +1,21 @@
+# Loads data inputs to the program
+
+import argparse
+import pandas as pd
+
+
+parser = argparse.ArgumentParser()
+{% comment %} input_name: [filename, method_name] {% endcomment %}
+{% for k, v in inputs %}
+parser.add.argument('--{{k}}', type=str, default=default)
+{% endfor %}
+
+args = parser.parse_args()
+
+{% for k, v in inputs %}
+{% if v[1]==-1 %}
+{{k}} = "{{v[0]}}"
+{% else %}
+{{k}} = pd.read_{{v[1]}}("{{v[0]}}")
+{% endif %}
+{% endfor %}

@@ -31,9 +31,7 @@ class StructureInit:
 
 
     def handle_env(self, env, base: Path):
-        print(f"{BASE_DIR}")
         dot_env_t = self.j_env.get_template("dot_env.txt")
-        env_vars_t = self.j_env.get_template("env_vars.txt")
         if env is None:
             # write raw templates if no env passed.
             with open(f"{TEMPLATES_DIR}/init/dot_env.txt") as content_f:
@@ -51,12 +49,8 @@ class StructureInit:
             eb_dict = env.as_dict()
 
             content_de = dot_env_t.render(**eb_dict)
-            content_ev = env_vars_t.render(**eb_dict)
 
-            with (base / "/settings/env_vars.py").open('w+') as f:
-                f.write(content_ev)
-            
-            with (base / "/settings/.env").open('w+') as f:
+            with (base / "settings/.env").open('w+') as f:
                 f.write(content_de)
 
 

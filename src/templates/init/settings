@@ -1,0 +1,43 @@
+from amlctor.core import FileInputSchema, PathInputSchema, StepSchema
+
+# module names:
+AML_MODULE_NAME: str =       'aml'
+SCRIPT_MODULE_NAME: str =    'script'
+DATALOADER_MODULE_NAME: str = 'data_loader'
+
+
+# extra
+
+EXTRA = {
+    'continue_on_step_failure': False,
+}
+
+
+
+
+NAME = "{{pipe_name}}"
+DESCRIPTION = "Your pipeline description"
+
+
+file = FileInputSchema(
+    name='name', datastore_name='datastore', path_on_datasore='', 
+    files = ['file.ext'], data_reference_name = 'datarefname'
+    )
+
+path = PathInputSchema(
+    name='tags_path', datastore_name='datastore', path_on_datasore='',
+    data_reference_name='')
+
+
+step1 = StepSchema(
+                name='step_name', 
+                compute_target='compute_name', 
+                input_data=[file, path], 
+                allow_reuse=False
+            )
+
+
+STEPS = [step1, ]
+
+
+
