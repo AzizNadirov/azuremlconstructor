@@ -31,17 +31,17 @@ class StructureInit:
 
 
     def handle_env(self, env, base: Path):
-        dot_env_t = self.j_env.get_template("dot_env.txt")
+        dot_env_t = self.j_env.get_template("dot_env")
         if env is None:
             # write raw templates if no env passed.
-            with open(f"{TEMPLATES_DIR}/init/dot_env.txt") as content_f:
+            with open(f"{TEMPLATES_DIR}/init/dot_env") as content_f:
                 content_de = content_f.read()
 
             with (base / "settings/.env").open(mode='w+') as f:
                 f.write(content_de)
 
             with (base / "settings/env_vars.py").open('w+') as f:
-                with open(f"{TEMPLATES_DIR}/init/env_vars.txt") as content_f:
+                with open(f"{TEMPLATES_DIR}/init/env_vars") as content_f:
                     content_ev = content_f.read()
                 f.write(content_ev)
 
@@ -56,7 +56,7 @@ class StructureInit:
 
 
     def create_conda_deps(self, base: Path):
-        with open(f"{TEMPLATES_DIR}/init/conda_dependencies.txt") as f:
+        with open(f"{TEMPLATES_DIR}/init/conda_dependencies") as f:
             content = f.read()
 
         with (base / 'settings/conda_dependencies.yml').open('w+') as f:
@@ -64,7 +64,7 @@ class StructureInit:
 
 
     def create_setting_py(self, base: Path):
-        settings_t = self.j_env.get_template('settings.txt')
+        settings_t = self.j_env.get_template('settings')
         content = settings_t.render(pipe_name=self.pipe_name)
 
         with (base / 'settings/settings.py').open('w+') as f:
@@ -73,7 +73,7 @@ class StructureInit:
 
     def create_amlignore(self, base: Path):
 
-        with open(f"{TEMPLATES_DIR}/init/dot_amlignore.txt") as f:
+        with open(f"{TEMPLATES_DIR}/init/dot_amlignore") as f:
             content = f.read()
 
         with (base / 'settings/.amlignore').open('w+') as f:

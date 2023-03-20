@@ -40,8 +40,10 @@ class Step:
 
 
     def build_step(self, path: Path):
+        settingspy = get_settingspy_module(path)
+
         step = PythonScriptStep(name=self.name,
-                                script_name=f"{self.name}/main.py",
+                                script_name=f"{self.name}/{settingspy['AML_MODULE_NAME']}.py",
                                 compute_target=self.compute_target,
                                 source_directory=None,
                                 inputs=[i.data for i in self.input],
@@ -68,7 +70,14 @@ class Step:
 
 
 class Pipe:
-    def __init__(self, name, description, steps: list, continue_on_step_failure=False, commit=True):
+    def __init__(self, 
+                 path: Path,
+                 name: str, 
+                 description: str,
+                 steps: list,
+                 continue_on_step_failure: bool=False,
+                 commit: bool=True):
+        
         self.name = name
         self.description = description
         self.steps = steps
@@ -76,16 +85,17 @@ class Pipe:
         self.workspace = self.get_workspace()
         self.env = get_env()
         self.continue_on_step_failure = continue_on_step_failure
+        self.path = path
         assert isinstance(commit, bool)
         if commit:
-            self.pipeline = self.create_pipeline(self.name)
+            self.pipeline = self.create_pipeline()
         else:
             self.pipeline = None
 
 
-    def create_pipeline(self, pipe_name):
+    def create_pipeline(self):
         steps = [step.step for step in self.steps]
-        pipeline = Pipeline(workspace=self.workspace, steps=steps, default_source_directory=f'pipelines/{pipe_name}')
+        pipeline = Pipeline(workspace=self.workspace, steps=steps, default_source_directory=self.path)
         return pipeline
 
 
