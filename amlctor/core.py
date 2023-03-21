@@ -54,7 +54,6 @@ class Step:
 
 
     def get_run_config(self):
-        # env = Environment.from_conda_specification(self.env.environment_name, self.env.environment_file)
         run_config = RunConfiguration()
         run_config.environment = self.env
         return run_config

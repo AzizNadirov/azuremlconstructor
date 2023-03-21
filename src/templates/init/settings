@@ -9,7 +9,7 @@ DATALOADER_MODULE_NAME: str = 'data_loader'
 # extra
 
 EXTRA = {
-                    'continue_on_step_failure': False,
+            'continue_on_step_failure': False,
 }
 
 

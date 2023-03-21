@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Union
 
-from amlctor.utils import get_settingspy_module
+from amlctor.utils import get_settingspy_module, is_pipe
 from amlctor.core import PathInput, FileInput, Step, PathInputSchema, FileInputSchema, StepSchema, Pipe
 
 
@@ -15,18 +15,8 @@ class RunHandler:
 
 
     def check_path(self):
-        if self.path / 'settings' in self.path.iterdir():   # has settings dir
-            settings_path = self.path / 'settings'
-            files_to_check = ('.env', 'conda_dependencies.yml', 'settings.py')
-            for file in files_to_check:
-                if not file in settings_path.iterdir():
-                    raise ValueError(
-                        f"Your settings folder doesn't"
-                        " '{file}' file. Make shure that you have inited pipe correctyl.")
-        else:
-            raise ValueError(
-                'Your pipeline has no settings folder. Make shure that you have inited pipeline'
-                ' and changed directory to the pipeline dir')
+        if not is_pipe(self.path):
+            raise ValueError(f"Passed path doesn't contain pipeline: '{self.path}'")
         
 
 

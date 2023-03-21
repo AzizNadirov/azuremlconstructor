@@ -2,7 +2,7 @@ from argparse import ArgumentParser, Namespace
 from pathlib import Path 
 import re
 
-from core.init.init import EnvBank
+from amlctor.init.init import EnvBank
 
 
 def parse_args():
@@ -157,7 +157,7 @@ class ArgsHandler:
 
 
         elif command == 'run':
-            """ init -p """
+            """ run -p """
             from amlctor.run.run import RunHandler
 
             path: Path =    ArgsHandler.valid_path(self.args.path)  # check only for existence
@@ -165,7 +165,7 @@ class ArgsHandler:
 
 
         elif command == 'rename':
-            """ rename  -p -o -n -x"""
+            """ rename  -f -o -n -s -p"""
             path: Path =    ArgsHandler.valid_path(self.args.path)
             # TODO implement rename
 
