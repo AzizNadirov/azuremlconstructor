@@ -2,6 +2,8 @@ from pathlib import Path
 
 from amlctor.utils import get_settingspy_module, is_pipe
 from amlctor.init.args_handling import ArgsHandler
+from amlctor import exceptions
+from amlctor import schemas
 
 
 
@@ -26,11 +28,17 @@ class RenameHandler:
     def validate(self):
         if not self.is_step is True:
             if not is_pipe(self.path, self.old_name):
-                raise ValueError(f"Passed path doesn't contain pipeline: '{self.path}'")
+                pipe_name = get_settingspy_module(self.path)['NAME']
+                raise exceptions.PathHasNoThePipelineException(pipe_name=pipe_name,
+                                                               path=self.path,
+                                                               message=schemas.PathHasNoThePipelineSchema.message)
             
         if self.is_step is True:
             if not is_pipe(self.path, self.old_name, is_step=True):
-                raise ValueError(f"Passed path doesn't contain pipeline: '{self.path}'")
+                pipe_name = get_settingspy_module(self.path)['NAME']
+                raise exceptions.PipelineHasNoTheStepException(pipe_name=pipe_name,
+                                                               step_name=self.old_name,
+                                                               message=schemas.PipelineHasNoTheStepSchema.message)
         
         self.new_name = ArgsHandler.valid_pipe_name(self.new_name)  # validate new_name
 

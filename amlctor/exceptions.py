@@ -36,9 +36,9 @@ class PathHasNoPipelineException(Exception):
 
 class PathHasNoThePipelineException(Exception):
     """ There is no specified pipeline on the path """
-    def __init__(self, path: Path, name: str, message: str, *args: object) -> None:
+    def __init__(self, path: Path, pipe_name: str, message: str, *args: object) -> None:
         self.path = path
-        self.message: str = f"{message}. Pipeline: '{name}' at '{path}'"
+        self.message: str = f"{message}. Pipeline: '{pipe_name}' at '{path}'"
         super().__init__(self.message, *args)
 
 

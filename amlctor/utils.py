@@ -5,10 +5,11 @@ from pathlib import Path
 	
 def get_settingspy_module(path: Path) -> dict:
 		""" 
-				returns names from the `settings.py` modul of the pipeline `path` directory 
-				path:           pipeline path
-				returns:        dict of names from the module. 
+			returns names from the `settings.py` modul of the pipeline `path` directory 
+			path:           pipeline path
+			returns:        dict of names from the module. 
 		"""
+		module_names = ('AML_MODULE_NAME', 'SCRIPT_MODULE_NAME', 'DATALOADER_MODULE_NAME')
 		path_settingspy = str(path / 'settings.py')
 		spec = spec_from_file_location('settings', path_settingspy)
 		dirs = dir(spec.loader.load_module())
@@ -16,7 +17,12 @@ def get_settingspy_module(path: Path) -> dict:
 		kws = {}
 		module = spec.loader.load_module()
 		for kw in dirs:
-				kws[kw] = module.__dict__[kw]
+			kws[kw] = module.__dict__[kw]
+		# module names for standartize .ext part - should be without extention
+		for k in kws.keys():
+			if k in module_names:
+				if kws[k].endswith('.py'):
+					kws[k] = kws[k].replace('.py', '')
 
 		return kws
 
