@@ -193,9 +193,9 @@ class ArgsHandler:
             from amlctor.update.update import UpdateHandler
 
             path: Path =                    ArgsHandler.valid_path(self.args.path)
-            is_step: Union[str, bool] =     self.args.step
+            for_step: Union[str, bool] =     self.args.step
 
-            handler = UpdateHandler(path=path, is_step=is_step)
+            handler = UpdateHandler(path=path, for_step=for_step)
 
         else:
             raise SystemExit(1)

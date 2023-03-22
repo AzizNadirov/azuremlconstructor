@@ -11,7 +11,13 @@ from amlctor.schemas import PathHasNoPipelineSchema, PipelineHasNoTheStepSchema
 
 class UpdateHandler:
     def __init__(self, path: Path, for_step: Union[str, bool]) -> None:
-        """ Update dataloaders. """
+        """ 
+            Update dataloaders. 
+            path: path to the pipeline
+            for_step:   if False - update for all steps
+                        otherwise for the step name passed here
+        """
+        # TODO generally, there are so many things for thinking on. For now, just `dataloaders`
         self.path = path
         self.for_step = for_step
         
