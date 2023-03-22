@@ -10,8 +10,7 @@ class RenameHandler:
                  path: Path,
                  old_name: str,
                  new_name: str,
-                 is_step: bool,
-                 is_pipe: bool):
+                 is_step: bool):
         
         """ 
             Renaming pipe/step means renaming folder, correcting
@@ -22,11 +21,10 @@ class RenameHandler:
         self.old_name = old_name
         self.new_name = new_name
         self.is_step = is_step
-        self.is_pipe = is_pipe
 
 
     def validate(self):
-        if self.is_pipe is True:
+        if not self.is_step is True:
             if not is_pipe(self.path, self.old_name):
                 raise ValueError(f"Passed path doesn't contain pipeline: '{self.path}'")
             
@@ -34,7 +32,7 @@ class RenameHandler:
             if not is_pipe(self.path, self.old_name, is_step=True):
                 raise ValueError(f"Passed path doesn't contain pipeline: '{self.path}'")
         
-        self.new_name = ArgsHandler.valid_pipe_name(self.new_name)
+        self.new_name = ArgsHandler.valid_pipe_name(self.new_name)  # validate new_name
 
 
     def rename_dirs(self):

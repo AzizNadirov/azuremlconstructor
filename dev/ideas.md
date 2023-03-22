@@ -26,11 +26,10 @@
 
     ```
     amlctor rename
-        -f/--path <pipe path>  
+        -p/--path <pipe path>  
         -o/--old <old name> 
         -n/--new <new name> 
         -s/--step 
-        -p/--pipeline
     ```
 
 `

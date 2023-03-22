@@ -1,5 +1,6 @@
 from argparse import ArgumentParser, Namespace
 from pathlib import Path 
+from typing import Union
 import re
 
 from amlctor.init.init import EnvBank
@@ -37,8 +38,15 @@ def parse_args():
                                 help="Old pipeline step name.")
     rename_command.add_argument('-n', '--new_name', type=str, required=True,
                                 help="New pipeline step name.")
-    rename_command.add_argument('-x', '--pipe', required=False, action='store_true',
-                                help="pass this flag if it's name of pipeline.")
+    rename_command.add_argument('-s', '--step', required=False, action='store_true',
+                                help="pass this flag if it's name of step.")
+    
+    update_command = commands.add_parser('update',
+                                         help = "Update pipeline or step regarding to settings")
+    update_command.add_argument('-p', '--path', type=str, required=True,
+                                help="Path to the pipeline.")
+    update_command.add_argument('-s', '--step', type=str, required=False,
+                                help="Apply updatng only for the passed step.")
 
     args = parser.parse_args()
 
@@ -145,6 +153,7 @@ class ArgsHandler:
             name: str =     ArgsHandler.valid_pipe_name(self.args.name)
             path: Path =    ArgsHandler.valid_path(self.args.path)
             env: EnvBank =  ArgsHandler.valid_select_env(self.args.env)
+            
             handler = InitHandler(name=name, path=path, env=env)
 
 
@@ -153,6 +162,7 @@ class ArgsHandler:
             from amlctor.apply.apply import ApplyHandler
 
             path: Path =    ArgsHandler.valid_path(self.args.path)  # check only for existence
+
             handler = ApplyHandler(path=path)
 
 
@@ -161,13 +171,31 @@ class ArgsHandler:
             from amlctor.run.run import RunHandler
 
             path: Path =    ArgsHandler.valid_path(self.args.path)  # check only for existence
+
             handler = RunHandler(path=path)
 
 
         elif command == 'rename':
-            """ rename  -f -o -n -s -p"""
+            """ rename  -p -o -n -s"""
+            from amlctor.rename.rename import RenameHandler
+
             path: Path =    ArgsHandler.valid_path(self.args.path)
-            # TODO implement rename
+            old_name: str = self.args.old
+            new_name: str = self.args.new
+            is_step: bool = self.args.step
+
+            handler = RenameHandler(path=path, 
+                                    old_name=old_name, 
+                                    new_name=new_name, 
+                                    is_step=is_step)
+        elif command == 'update':
+            """ update  -p -s """
+            from amlctor.update.update import UpdateHandler
+
+            path: Path =                    ArgsHandler.valid_path(self.args.path)
+            is_step: Union[str, bool] =     self.args.step
+
+            handler = UpdateHandler(path=path, is_step=is_step)
 
         else:
             raise SystemExit(1)
@@ -177,7 +205,7 @@ class ArgsHandler:
 
 
     def launch(self):
-        """ Lounchs arg validation and starts handler """
+        """ Launches arg validation and starts handler """
         handler = self.valid_args()
         handler.start()
 

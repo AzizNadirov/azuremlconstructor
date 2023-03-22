@@ -36,9 +36,9 @@ def is_pipe(path: Path, pipe_name: str = None, is_step: bool = False) -> bool:
 			files_to_check = ('.env', 'conda_dependencies.yml', 'settings.py')
 			for file in files_to_check:
 				if not file in settings_path.iterdir():
-					return False
+					return False						# path doesn't contain a pipe
 				
-			contains_pipe = True
+			contains_pipe = True						# does.
 		
 		else:
 			return False	# there is no any pipeline
@@ -61,6 +61,11 @@ def is_pipe(path: Path, pipe_name: str = None, is_step: bool = False) -> bool:
 				return False			# not fount
 			else:
 				raise ValueError(f"'is_step' should be boolean not '{type(is_step)}'")
+			
+
+def is_pipe_raise(path: Path, pipe_name: str = None, is_step: bool = False) -> bool:
+	""" The same as `is_pipe` but raises exceptions in False casees """
+	r = is_pipe(path, pipe_name, is_step)
 
 		
 		 

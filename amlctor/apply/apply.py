@@ -3,8 +3,10 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 
 from amlctor.core import StepSchema
-from confs.configs import TEMPLATES_DIR
+from confs.configs import TEMPLATES_DIR, STEP_NAME_MAX, STEP_NAME_MIN, STEP_NAME_KEYWORDS
 from amlctor.utils import get_settingspy_module, is_pipe
+from amlctor import exceptions as exceptions
+from amlctor import schemas
 
 
 
@@ -106,7 +108,37 @@ class ApplyHandler:
 
     def check_path(self):
         if not is_pipe(self.path):
-            raise ValueError(f"Passed path doesn't contain pipeline: '{self.path}'")
+            raise exceptions.PathHasNoPipelineException(path =      self.check_path, 
+                                                        message =   schemas.PathHasNoPipelineSchema.message)
+        
+
+    def validate(self):
+        MAX_LEN = 128
+        settingspy = get_settingspy_module(self.path)
+        steps = settingspy['STEPS']
+        for step in steps:
+
+            if not isinstance(step.name, str):
+                raise exceptions.IncorrectTypeArgumentException(valid_type=str,
+                                                                actually_is=type(name),
+                                                                message=schemas.IncorrectArgumentTypeSchema.message)
+            self.name = self.name.strip()
+            name = self.name
+
+            if not name.isidentifier():
+                raise exceptions.IncorrectStepNameException(step_name = name,
+                                                            message =   schemas.IncorrectStepNameSchema.IsNotIdentifier)
+            elif len(name) < STEP_NAME_MIN:
+                raise exceptions.IncorrectStepNameException(step_name = name,
+                                                            message =   schemas.IncorrectStepNameSchema.LowMin)
+            elif len(name) > STEP_NAME_MAX:
+                raise exceptions.IncorrectStepNameException(step_name = name,
+                                                            message =   schemas.IncorrectStepNameSchema.UpMax)
+            elif name in STEP_NAME_KEYWORDS:
+                raise exceptions.IncorrectStepNameException(step_name = name,
+                                                            message =   schemas.IncorrectStepNameSchema.IsKeyWord)
+
+
 
 
     def start(self):
