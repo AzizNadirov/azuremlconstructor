@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Union
 
 
 
@@ -61,7 +61,7 @@ class PipelineHasNoStepException(Exception):
 
 
 class IncorrectTypeArgumentException(Exception):
-    def __init__(self, message: str, valid_type: Callable, actually_is: Callable, *args: object) -> None:
+    def __init__(self, message: str, valid_type: Union[Callable, tuple, list], actually_is: Callable, *args: object) -> None:
         self.message = f"{message}. Should be: '{valid_type}'; Passed: '{actually_is}'"
         super().__init__(message, *args)
 

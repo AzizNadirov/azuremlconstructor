@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from confs import configs as confs
 
 
-
+# Schemas for Custom Exceptions
 @dataclass
 class IncorrectPipeNameSchema:
     UpMax:              str = f"Pipeline name longer than {confs.PIPE_NAME_MAX}"
