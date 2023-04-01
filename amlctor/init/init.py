@@ -32,6 +32,7 @@ class EnvBank:
             'workspace_name': self.workspace_name ,
             'environment_name': self.environment_name ,
             'tenant_id': self.tenant_id}
+        
         return d
 
 
@@ -79,19 +80,9 @@ class EnvBank:
             environment_name: str
             tenant_id: str
 
-            def to_dict(self) -> dict:
-                d = {
-                    'name': self.name,
-                    'subscription_id': self.subscription_id,
-                    'resource_group': self.resource_group,
-                    'build_id': self.build_id,
-                    'workspace_name': self.workspace_name,
-                    'environment_name': self.environment_name,
-                    'tenant_id': self.tenant_id,
-                }
-                return d
+
         try:
-            parsed_dict = EnvSchema.parse_raw(json_str).to_dict()
+            parsed_dict = EnvSchema.parse_raw(json_str).dict()
             return EnvBank(**parsed_dict)
         except pydantic.error_wrappers.ValidationError:
             return -1
@@ -113,7 +104,8 @@ class EnvBank:
         if os.path.exists(file):
             while True:
                 r = input(
-                    f"File '{self.name}.e' already exists. Dou you want to overwrite it? Old file will be lost? y/n: ")
+                    f"File '{self.name}.e' already exists. Dou you want to overwrite it? Old file will be lost? y/n: "
+                    )
                 if r.lower() in ('y', 'yes'):
                     with open(file, 'w') as f:
                         f.write(encoded_env)

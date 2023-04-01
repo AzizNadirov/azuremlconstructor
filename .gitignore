@@ -1,7 +1,8 @@
 # dev/
 ebs/
+tmp/
 idea/
 env/
 __pycache__/
-.idea
+.idea/
 

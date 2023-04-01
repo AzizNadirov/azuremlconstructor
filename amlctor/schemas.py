@@ -49,3 +49,8 @@ class PipelineHasNoStepSchema:
 class IncorrectArgumentTypeSchema:
     message:            str = f"Got incorrect type of argument"
 
+
+
+@dataclass
+class IncorrectFileNameSchema:
+    message:            str = f"Passed Incorrect file name:"

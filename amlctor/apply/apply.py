@@ -4,9 +4,11 @@ from jinja2 import Environment, FileSystemLoader
 
 from amlctor.core import StepSchema
 from confs.configs import TEMPLATES_DIR, STEP_NAME_MAX, STEP_NAME_MIN, STEP_NAME_KEYWORDS
-from amlctor.utils import get_settingspy_module, is_pipe
+from amlctor.utils import get_settingspy_module, is_pipe, check_filename
 from amlctor import exceptions as exceptions
 from amlctor import schemas
+from amlctor.input import FileInputSchema
+
 
 
 
@@ -25,10 +27,9 @@ class StructureApply:
         """ 
             Creates step dirs and files based on the `settings.py` file.
         """
-        
         for step in self.settingspy['STEPS']:
             step_path = self.path / step.name
-            step_path.mkdir(mode=0o770)                 # create dir for pipe step
+            step_path.mkdir(mode=0o770, exist_ok=True)                 # create dir for pipe step
             self.create_files(step, step_path)          # create files inside step dir
 
 
@@ -36,24 +37,54 @@ class StructureApply:
         script_name = self.settingspy['SCRIPT_MODULE_NAME']               # create script.py
         if not script_name.endswith('.py'):
                 script_name = script_name + '.py'
-        (step_path / script_name).touch(exist_ok=False)
+        if (step_path / script_name).exists():
+            response = input(f"file '{(step_path / script_name)}' already exists. Type- overwrite: o; skip: s; cancel: c: ")
+            if response.lower().strip() in ('o', 'overwrite'):
+                (step_path / script_name).touch(exist_ok=True)
+            elif response.lower().strip() in ('s', 'skip'):
+                pass
 
-
-        dataloader_name = self.settingspy['DATALOADER_MODULE_NAME']       # create data_loader.py 
-        if not dataloader_name.endswith('.py'):
-            dataloader_name = dataloader_name + '.py'
-
+            elif response.lower().strip() in ('c', 'cancel'):
+                raise SystemExit("Cancelled.")
+            else:
+                raise ValueError(f"Incorrect answer '{response}'. It must be one of [o, s, c]")
+            
+        # create data_loader.py
+        dataloader_name = self.settingspy['DATALOADER_MODULE_NAME'] 
+        dataloader_name = self.ext(dataloader_name, True)                 # add .py
         content, keys = StructureApply.create_dataloader_content(step=step)
+        
         with (step_path / dataloader_name).open(mode='w+') as dataloader:
             dataloader.write(content)
-
-        aml_name = self.settingspy['AML_MODULE_NAME']                     # create aml.py
-        if not aml_name.endswith('.py'):
-                aml_name = aml_name + '.py'
+        # create aml.py
+        aml_name = self.settingspy['AML_MODULE_NAME']
+        aml_name = self.ext(aml_name, True)
         with (step_path / aml_name).open(mode='w+') as aml:
             aml_t = StructureApply.jinva_env.get_template('aml')
+            dataloader_name = self.ext(dataloader_name, yes=False)     # no extention for importing in template
             content = aml_t.render(dataloader_name=dataloader_name, keys=keys)
             aml.write(content)
+
+
+    
+    def ext(self, filename: str, yes=True):
+        """ 
+            Returns filename with or without '.py extention'.
+            yes: if True then add '.py', else drop out.
+        """
+        filename = filename.strip()     # just 4 fun
+
+        if filename.endswith('.py'): # has extention
+            if yes is True:
+                return filename
+            else:
+                return filename.split('.')[0]
+        else:                           # has no extention
+            if yes is True:
+                return filename + '.py'
+            else:
+                return filename
+
 
 
 
@@ -64,13 +95,13 @@ class StructureApply:
         def get_pandas_reader(filename: str):
             """ returns pandas reader method name for filename extention """          
             if filename.endswith('.parquet'):
-                return "read_parquet()"
+                return "read_parquet"
             elif filename.endswith(".csv"):
-                return "read_csv()"
+                return "read_csv"
             elif filename.endswith(".xls") or filename.endswith(".xlsx"):
-                return "read_excel()"
+                return "read_excel"
             elif filename.endswith(".json"):
-                return "read_json()"
+                return "read_json"
             else:
                 raise ValueError(f"Unsupported file: {filename}. Supports: parquet, csv, excel, json")
 
@@ -79,14 +110,16 @@ class StructureApply:
         res = {}
         data_list = step.input_data     # list of FileInput objects
         for data in data_list:
-            if data.__class__.__name__ == 'FileInput':
-                res[data.name] = [data.filename, get_pandas_reader(data.filename)]
-            elif data.__class__.__name__ == 'PathInput':
-                res[data.name] = [data.path, -1]    # pandas method for PathInput = -1
+            if data.__class__.__name__ == 'FileInputSchema':
+                for filename in data.files:
+                    res[filename.split('.')[0]] = [filename, get_pandas_reader(filename)]
+
+            elif data.__class__.__name__ == 'PathInputSchema':
+                res[data.name] = [-1, -1]    # pandas method for PathInput = -1
             
             else:
                 ValueError(f"InternalError: Unsupported DataInput object: {type(data)}")
-        
+            
         content = dataloader_t.render(inputs=res)
         return content, list(res.keys())
     
@@ -108,7 +141,7 @@ class ApplyHandler:
 
     def check_path(self):
         if not is_pipe(self.path):
-            raise exceptions.PathHasNoPipelineException(path =      self.check_path, 
+            raise exceptions.PathHasNoPipelineException(path =      self.path, 
                                                         message =   schemas.PathHasNoPipelineSchema.message)
         
 
@@ -137,8 +170,15 @@ class ApplyHandler:
             elif name in STEP_NAME_KEYWORDS:
                 raise exceptions.IncorrectStepNameException(step_name = name,
                                                             message =   schemas.IncorrectStepNameSchema.IsKeyWord)
-
-
+        # validate files in steps
+        for step in steps:
+            for inp in step.input_data:
+                if isinstance(inp, FileInputSchema):
+                    for filename in inp.files:
+                        if check_filename(filename=filename) is False:
+                            raise exceptions.IncorrectFileNameException(
+                                message=schemas.IncorrectFileNameSchema.message,
+                                filename=filename)
 
 
     def start(self):

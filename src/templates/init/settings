@@ -1,4 +1,5 @@
-from amlctor.core import FileInputSchema, PathInputSchema, StepSchema
+from amlctor.input import FileInputSchema, PathInputSchema
+from amlctor.core import StepSchema
 
 # module names:
 AML_MODULE_NAME: str =       'aml'
@@ -22,7 +23,7 @@ DESCRIPTION = "Your pipeline description"
 file = FileInputSchema(
                         name='name', 
                         datastore_name='datastore', 
-                        path_on_datasore='', 
+                        path_on_datastore='', 
                         files = ['file.ext'], 
                         data_reference_name = 'datarefname'
     )
@@ -30,7 +31,7 @@ file = FileInputSchema(
 path = PathInputSchema(
                         name='tags_path', 
                         datastore_name='datastore', 
-                        path_on_datasore='',
+                        path_on_datastore='',
                         data_reference_name=''
     )
 

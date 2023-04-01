@@ -1,5 +1,6 @@
 from importlib.util import spec_from_file_location
 from pathlib import Path
+import re
 
 
 	
@@ -10,10 +11,10 @@ def get_settingspy_module(path: Path) -> dict:
 			returns:        dict of names from the module. 
 		"""
 		module_names = ('AML_MODULE_NAME', 'SCRIPT_MODULE_NAME', 'DATALOADER_MODULE_NAME')
-		path_settingspy = str(path / 'settings.py')
+		path_settingspy = str(path / 'settings/settings.py')
 		spec = spec_from_file_location('settings', path_settingspy)
 		dirs = dir(spec.loader.load_module())
-		dirs = [dir for dir in dirs if  not dir.startswith('__') and dir.endswith('__')]
+		dirs = [dir for dir in dirs if  not dir.startswith('__') and not dir.endswith('__')]
 		kws = {}
 		module = spec.loader.load_module()
 		for kw in dirs:
@@ -40,8 +41,9 @@ def is_pipe(path: Path, pipe_name: str = None, is_step: bool = False) -> bool:
 		if path / 'settings' in path.iterdir():   # has settings dir
 			settings_path = path / 'settings'
 			files_to_check = ('.env', 'conda_dependencies.yml', 'settings.py')
+			dir_files = [p.name for p in settings_path.iterdir()]
 			for file in files_to_check:
-				if not file in settings_path.iterdir():
+				if not file in dir_files:
 					return False						# path doesn't contain a pipe
 				
 			contains_pipe = True						# does.
@@ -72,6 +74,26 @@ def is_pipe(path: Path, pipe_name: str = None, is_step: bool = False) -> bool:
 def is_pipe_raise(path: Path, pipe_name: str = None, is_step: bool = False) -> bool:
 	""" The same as `is_pipe` but raises exceptions in False casees """
 	r = is_pipe(path, pipe_name, is_step)
+
+
+
+
+def check_filename(filename: str) -> bool:
+	# chech extention
+	if filename.count('.') > 1: return False
+	if filename.count('.') == 0:					# no extention
+		pattern = r'^[a-zA-Z0-9_\-]+$'
+		if re.match(pattern, filename):
+			return True
+		else:
+			return False
+		
+	if filename.count('.') == 1:						# has extention
+		pattern = r'^[a-zA-Z0-9_\-]+\.[a-zA-Z0-9]+$'
+		if re.match(pattern, filename):
+			return True
+		else:
+			return False
 
 		
 		 

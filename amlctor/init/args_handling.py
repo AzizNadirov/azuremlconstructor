@@ -94,7 +94,7 @@ class ArgsHandler:
         if path.strip() == '.':
             return Path.cwd()
 
-        path = Path(path)
+        path = Path(path).resolve()
         if not path.exists():
             raise ValueError(f'specified path does not exist: \n{path}')
         return path

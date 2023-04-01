@@ -66,3 +66,9 @@ class IncorrectTypeArgumentException(Exception):
         super().__init__(message, *args)
 
 
+
+class IncorrectFileNameException(Exception):
+    def __init__(self, message: str, filename: str, *args: object) -> None:
+        self.message = f"{message}. '{filename}'"
+        super().__init__(*args)
+

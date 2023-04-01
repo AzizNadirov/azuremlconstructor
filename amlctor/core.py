@@ -11,7 +11,8 @@ from azureml.core.authentication import InteractiveLoginAuthentication
 from amlctor.apply.env import get_env
 from amlctor.utils import get_settingspy_module
 
-from amlctor.input import PathInput, FileInput
+from amlctor.input import PathInput, FileInput, FileInputSchema, PathInputSchema
+
 
 
 class Step:
@@ -127,27 +128,10 @@ class Pipe:
 
 
 @dataclass(frozen=True)
-class FileInputSchema:
-    name: str
-    datastore_name: str
-    path_on_datastore: str
-    data_reference_name: str
-    files: List[str]
-
-
-@dataclass(frozen=True)
-class PathInputSchema:
-    name: str
-    datastore_name: str
-    path_on_datastore: str
-    data_reference_name: str
-
-
-@dataclass(frozen=True)
 class StepSchema:
     name: str
     compute_target: str
-    input_data: List[Union[PathInput, FileInput]]
+    input_data: List[Union[FileInputSchema, PathInputSchema]]
     allow_reuse: bool = False
 
 

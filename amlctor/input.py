@@ -1,4 +1,5 @@
 from typing import List, Union, Callable
+from dataclasses import dataclass
 
 import pandas as pd
 
@@ -287,3 +288,18 @@ class GetBlobFile:
 
 
 
+@dataclass(frozen=True)
+class FileInputSchema:
+    name: str
+    datastore_name: str
+    path_on_datastore: str
+    data_reference_name: str
+    files: List[str]
+
+
+@dataclass(frozen=True)
+class PathInputSchema:
+    name: str
+    datastore_name: str
+    path_on_datastore: str
+    data_reference_name: str
