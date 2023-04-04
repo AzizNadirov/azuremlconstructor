@@ -1,4 +1,4 @@
-from argparse import ArgumentParser, Namespace
+from argparse import ArgumentParser, Namespace, SUPPRESS
 from pathlib import Path 
 from typing import Union
 import re
@@ -15,6 +15,7 @@ def parse_args():
     run_command.add_argument('-p', '--path', type=str, required=True,
                              help="path of pipeline. '.' for specify current directory")
 
+
     init_command = commands.add_parser('init',
                                        help='Initialise pipeline. ')
     init_command.add_argument('-n', '--name', type=str, required=True,
@@ -25,10 +26,12 @@ def parse_args():
                               help="Env file name for this pipeline. You will have to enter password for decrypt the "
                                    "env")
 
+
     apply_command = commands.add_parser('apply',
                                         help='Apply configs from the settings file and build pipeline.')
     apply_command.add_argument('-p', '--path', type=str, required=True,
                                help="Path to the pipeline. '.' for choose cwd.")
+
 
     rename_command = commands.add_parser('rename',
                                          help='Rename step or pipeline.')
@@ -41,12 +44,37 @@ def parse_args():
     rename_command.add_argument('-s', '--step', required=False, action='store_true',
                                 help="pass this flag if it's name of step.")
     
+
     update_command = commands.add_parser('update',
                                          help = "Update pipeline or step regarding to settings")
     update_command.add_argument('-p', '--path', type=str, required=True,
                                 help="Path to the pipeline.")
     update_command.add_argument('-s', '--step', type=str, required=False,
                                 help="Apply updatng only for the passed step.")
+    
+
+
+
+    denv_parser = commands.add_parser("denv", help="Manage your EnvBank")
+    denv_subparsers = denv_parser.add_subparsers(title="denv subcommands")
+
+    create_parser = denv_subparsers.add_parser("create", help="Create a denv")
+    create_parser.add_argument("-p", "--path", help="Path to .env file", required=False)
+    create_parser.add_argument("-n", "--name", help="Name your denv", required=False)
+    create_parser.add_argument("--_subcommand", help=SUPPRESS, default='create', choices=['create', 'get', 'rm'])
+    create_parser.add_argument("-i", "--interactive", help="create denv interactively", required=False, action='store_true')
+
+
+
+    retrieve_parser = denv_subparsers.add_parser("get", help="Get the denv")
+    retrieve_parser.add_argument("-n", "--name", help="Name of the denv", required=False)
+    retrieve_parser.add_argument("-a", "--all", help="get all denv names", required=False, action='store_true')
+    retrieve_parser.add_argument("--_subcommand", help=SUPPRESS, default='get', choices=['create', 'get', 'rm'])
+
+    delete_parser = denv_subparsers.add_parser("rm", help="Remove the denv")
+    delete_parser.add_argument("-n", "--name", help="Name of the denv", required=True)
+    delete_parser.add_argument("--_subcommand", help=SUPPRESS, default='rm', choices=['create', 'get', 'rm'])
+
 
     args = parser.parse_args()
 
@@ -56,7 +84,7 @@ def parse_args():
 
 class ArgsHandler:
 
-    COMMANDS: tuple = ('init', 'apply', 'run', 'build')
+    COMMANDS: tuple = ('init', 'apply', 'run', 'rename', 'denv')
 
     def __init__(self, args: Namespace):
         self.args = args
@@ -196,6 +224,20 @@ class ArgsHandler:
             for_step: Union[str, bool] =     self.args.step
 
             handler = UpdateHandler(path=path, for_step=for_step)
+
+
+        elif command == 'denv':
+            """ 
+                denv create -p -n
+                denv get -n -a
+                denv rm -n
+            """
+            from amlctor.denv.denv import DenvHandler
+            args = {}
+            for k in vars(self.args):
+                args[k] = getattr(self.args, k)
+            handler = DenvHandler(args)
+
 
         else:
             raise SystemExit(1)

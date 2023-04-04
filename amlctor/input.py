@@ -11,7 +11,7 @@ from azureml.core import Workspace, Datastore
 from azureml.data.datapath import DataPath, DataPathComputeBinding
 from azureml.core.authentication import InteractiveLoginAuthentication
 
-from amlctor.apply.env import get_env
+from amlctor.denv.dot_env_loader import get_env
 
 from amlctor.exceptions import IncorrectTypeArgumentException
 from amlctor.schemas import IncorrectArgumentTypeSchema

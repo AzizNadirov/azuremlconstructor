@@ -5,10 +5,10 @@ from typing import List, Union
 from azureml.pipeline.core import Pipeline
 from azureml.pipeline.steps import PythonScriptStep
 from azureml.core.runconfig import RunConfiguration
-from azureml.core import Workspace, Datastore, Environment, Run
+from azureml.core import Workspace, Environment
 from azureml.core.authentication import InteractiveLoginAuthentication
 
-from amlctor.apply.env import get_env
+from amlctor.denv.dot_env_loader import get_env
 from amlctor.utils import get_settingspy_module
 
 from amlctor.input import PathInput, FileInput, FileInputSchema, PathInputSchema
