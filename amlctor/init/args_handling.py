@@ -138,8 +138,8 @@ class ArgsHandler:
         if not name.isidentifier():
             raise ValueError(f"env name must be identifier.")
         
-        path = f"{BANK_DIR}/{name}.e"
-        path = Path(path)
+        path = BANK_DIR / f"{name}.e"
+
         if not path.exists():
             files = path.glob('*.e')
             files = [file.name for file in files if file.is_file()]

@@ -22,13 +22,15 @@ class DenvHandler:
 
     def validate(self):
         """ validate and run method """
-        subcommand = self.args['_subcommand']
+        subcommand = self.args.get('_subcommand')
+        if not subcommand:
+            raise SystemExit("denv needs subcommand. Run with '-h' for more info")
         if subcommand == 'create':
             if self.args['interactive'] is False:
                 if self.args['path'] is not None and self.args['name'] is not None:
                     self.create(path=self.args['path'], name=self.args['name'])
                 else:
-                    print("You have to provide path(-p) and name(-n) arguments")
+                    print("You have to provide path(-p) and name(-n) arguments or create in intaractive mode with '-i' flag")
                     raise SystemExit('exit...')
             else:
                 self.i_create()
@@ -74,7 +76,7 @@ class DenvHandler:
         build_id = input("Build ID: ")
         workspace_name = input("Workspace Name: ")
         environment_name = input("Environment Name: ")
-        tenant_id = input('Tenant ID')
+        tenant_id = input('Tenant ID: ')
         # Create EnvBank instance
         eb = EnvBank(
         name=name,

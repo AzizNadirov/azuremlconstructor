@@ -122,13 +122,18 @@ class EnvBank:
         
 
     def __str__(self):
-        return f""" {self.name}\n
-                    subscription_id:        {self.subscription_id}
-                    resource_group:         {self.resource_group}
-                    build_id:               {self.build_id}
-                    workspace_name:         {self.workspace_name}
-                    environment_name:       {self.environment_name}
-                    tenant_id:              {self.tenant_id} """
+        return f""" \t{self.name}\n
+                subscription_id:        {self.subscription_id}
+                resource_group:         {self.resource_group}
+                build_id:               {self.build_id}
+                workspace_name:         {self.workspace_name}
+                environment_name:       {self.environment_name}
+                tenant_id:              {self.tenant_id} """
+    
+
+    def __repr__(self) -> str:
+        return f"""EnvBamk<{self.name}>: subscription_id: {self.subscription_id}; resource_group: {self.resource_group}; 
+                build_id: {self.build_id}; workspace_name: {self.workspace_name}; environment_name: {self.environment_name}; tenant_id:{self.tenant_id}"""
 
 
 class InitHandler:
