@@ -1,7 +1,7 @@
 SUBSCRIPTION_ID = {{subscription_id}}
 RESOURCE_GROUP = {{resource_group}}
 
-BUILD_BUILDID = {{build_id}}
+BUILD_ID = {{build_id}}
 
 # Azure ML Workspace Variables
 WORKSPACE_NAME = {{workspace_name}}
