@@ -95,7 +95,19 @@ def check_filename(filename: str) -> bool:
 		else:
 			return False
 
-		
+
+
+def valid_path(path: str, not_exist_ok=False) -> Path:
+	""" Returns resolved path. If 'not_exist_ok' is True then doesn't check existance of path"""
+	if path.strip() == '.':
+		return Path.cwd()
+	print('patha before\n', path)
+	path = Path(path).resolve()
+	print('patha after\n', path)
+	if not path.exists():
+		raise ValueError(f'Specified path does not exist: \n{path}')
+	return path
+	
 		 
 
 

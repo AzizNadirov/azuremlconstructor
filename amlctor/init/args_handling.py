@@ -141,6 +141,7 @@ class ArgsHandler:
         path = BANK_DIR / f"{name}.e"
 
         if not path.exists():
+            # passed env doesnt exist. Show existing ones
             files = path.glob('*.e')
             files = [file.name for file in files if file.is_file()]
             raise ValueError(f"env with name {name} doesn't exist. Envs in storage:\n{files}")
@@ -181,6 +182,8 @@ class ArgsHandler:
             name: str =     ArgsHandler.valid_pipe_name(self.args.name)
             path: Path =    ArgsHandler.valid_path(self.args.path)
             env: EnvBank =  ArgsHandler.valid_select_env(self.args.env)
+            if not env is None: 
+                env.set_environment_file(name)  # set denv file path
             
             handler = InitHandler(name=name, path=path, env=env)
 

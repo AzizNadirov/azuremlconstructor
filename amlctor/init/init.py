@@ -3,6 +3,7 @@ import os
 import json
 
 import pydantic
+from pydantic import BaseModel
 
 from confs.configs import BANK_DIR, BASE_DIR
 
@@ -10,10 +11,23 @@ from .init_structure import StructureInit
 
 
 class EnvBank:
+
+    class EnvSchema(BaseModel):
+            name: str
+            subscription_id: str
+            resource_group: str
+            build_id: str
+            workspace_name: str
+            environment_name: str
+            tenant_id: str
+            environment_file: str = None
+
+
     def __init__(self, name: str, subscription_id: str, resource_group: str, build_id: str,
-                 workspace_name: str, environment_name: str, tenant_id: str):
+                 workspace_name: str, environment_name: str, tenant_id: str, environment_file: str=None):
 
         EnvBank.valid_name(name.strip())
+
         self.name = name.strip()
         self.subscription_id = subscription_id
         self.resource_group = resource_group
@@ -21,6 +35,8 @@ class EnvBank:
         self.workspace_name = workspace_name
         self.environment_name = environment_name
         self.tenant_id = tenant_id
+        self.environment_file = environment_file
+
 
 
     @staticmethod
@@ -36,7 +52,7 @@ class EnvBank:
             "name": self.name, 'subscription_id': self.subscription_id,
             "resource_group": self.resource_group, 'build_id': self.build_id,
             "workspace_name": self.workspace_name, 'environment_name': self.environment_name,
-            "tenant_id": self.tenant_id}
+            "tenant_id": self.tenant_id, 'environment_file': self.environment_file}
         d = json.dumps(d)
         message = f"{d}"
         message_bytes = message.encode('utf-8')
@@ -56,7 +72,7 @@ class EnvBank:
         :param json_str:    decrypted json string for parsing.
         :return:            dict in successfully case, otherwise -1
         """
-        from pydantic import BaseModel
+
 
         class EnvSchema(BaseModel):
             name: str
@@ -66,12 +82,16 @@ class EnvBank:
             workspace_name: str
             environment_name: str
             tenant_id: str
+            environment_file: str = None
 
 
         try:
-            parsed_dict = EnvSchema.parse_raw(json_str).dict()
+            print(json_str,'\n')
+            parsed_dict = EnvSchema.parse_raw(json_str).dict()  
             return EnvBank(**parsed_dict)
-        except pydantic.error_wrappers.ValidationError:
+        
+        except pydantic.error_wrappers.ValidationError as e:
+            print(e)
             return -1
 
 
@@ -108,6 +128,7 @@ class EnvBank:
                 f.write(encoded_env)
                 print(f"Env saved as '{file}'")
 
+
     @staticmethod
     def load(name: str, password: str):
         file = f"{BANK_DIR}/{name}.e"
@@ -118,8 +139,14 @@ class EnvBank:
             eb = EnvBank.try_parse_env(decoded_env)
             return eb
         else:
-            raise ValueError(f"There is no Env in such name: {file}")
+            raise ValueError(f"There is no Env with such name: {file}")
         
+    
+
+    def set_environment_file(self, pipe_name: str):
+        """ by default dev 'environment_file' = None. The method sets it for pipeline name """
+        self.environment_file = f'{pipe_name}/settings/conda_dependencies.yml'
+
 
     def __str__(self):
         return f""" \t{self.name}\n
@@ -128,12 +155,15 @@ class EnvBank:
                 build_id:               {self.build_id}
                 workspace_name:         {self.workspace_name}
                 environment_name:       {self.environment_name}
-                tenant_id:              {self.tenant_id} """
+                tenant_id:              {self.tenant_id} 
+                'environment_file:      {self.environment_file}
+                """
     
 
     def __repr__(self) -> str:
         return f"""EnvBamk<{self.name}>: subscription_id: {self.subscription_id}; resource_group: {self.resource_group}; 
-                build_id: {self.build_id}; workspace_name: {self.workspace_name}; environment_name: {self.environment_name}; tenant_id:{self.tenant_id}"""
+                build_id: {self.build_id}; workspace_name: {self.workspace_name}; environment_name: {self.environment_name}; 
+                tenant_id:{self.tenant_id}; environment_file: {self.environment_file}"""
 
 
 class InitHandler:
