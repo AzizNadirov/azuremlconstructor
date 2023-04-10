@@ -12,6 +12,7 @@ class RunHandler:
         self.path = path
         self.check_path()
         self.settingspy = get_settingspy_module(path)
+        self.env_path = path / 'settings/.env'
 
 
     def check_path(self):
@@ -20,32 +21,33 @@ class RunHandler:
         
 
 
-    @staticmethod
-    def input_fromschema(step: StepSchema) -> List[Union[PathInput, FileInput]]:
+    def input_fromschema(self, step: StepSchema) -> List[Union[PathInput, FileInput]]:
         if not bool(step.input_data):   # there are no any input data
-            return None
+            return None         # TODO
         
         inputs = []
 
         for inp in step.input_data:
-            if not isinstance(inp, PathInputSchema, FileInputSchema):
+            if not isinstance(inp, (PathInputSchema, FileInputSchema)):
                 raise ValueError(f"Unknown input data: {type(inp)}")
             
-            if isinstance(inp, PathInput):
+            if isinstance(inp, PathInputSchema):
                 input_instance = PathInput(
                                             name=inp.name,
-                                            datastore_name=inp.datastore,
-                                            path_on_datasore=inp.path_on_datasore               
+                                            datastore_name=inp.datastore_name,
+                                            path_on_datasore=inp.path_on_datastore,
+                                            denv_path=self.env_path               
                     )
                 inputs.append(input_instance)
 
-            elif isinstance(inp, FileInput):
+            elif isinstance(inp, FileInputSchema):
                 input_instance = FileInput(
                                             name=inp.name,
-                                            datastore_name=inp.datastore,
-                                            path_on_datasore=inp.path_on_datasore,
-                                            filename=inp.filenames,
-                                            data_reference_name=inp.data_reference_name               
+                                            datastore_name=inp.datastore_name,
+                                            path_on_datasore=inp.path_on_datastore,
+                                            filename=inp.files,
+                                            data_reference_name=inp.data_reference_name,
+                                            denv_path=self.env_path               
                     )
                 inputs.append(input_instance)
 
@@ -57,7 +59,7 @@ class RunHandler:
 
 
     def step_fromschema(self, step: StepSchema) -> Step:
-        step_input = RunHandler.input_fromschema(step)      # realise input data
+        step_input = self.input_fromschema(step)      # realise input data
         step_instance = Step(
             path = self.path,
             name = step.name,
@@ -81,7 +83,7 @@ class RunHandler:
         pipe_instance = Pipe(
             name = self.settingspy['NAME'],
             description = self.settingspy['DESCRIPTION'],
-            steps = self.settingspy['STEPS'],
+            steps = [self.step_fromschema(step) for step in self.settingspy['STEPS']],
             path=self.path,
             continue_on_step_failure = self.settingspy['EXTRA']['continue_on_step_failure'],
             commit = False

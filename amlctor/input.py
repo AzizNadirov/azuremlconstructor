@@ -41,7 +41,7 @@ class FileInput:
         if data_reference_name == '':
             data_reference_name = name
             
-        e = get_env(denv_path=denv_path)
+        e = get_env(pipe_path=denv_path)
         compute_binding = DataPathComputeBinding(mode="mount")
         self.data_reference_name = data_reference_name
 
@@ -51,7 +51,7 @@ class FileInput:
         if isinstance(filename, str):
             path_to = DataPath(datastore=self.data_store, path_on_datastore=path_on_datasore)
             self.data = [path_to.create_data_reference(data_reference_name=data_reference_name, 
-                                                       datapath_compute_binding=compute_binding)]
+                                                       datapath_compute_binding=compute_binding),]
             self.name = name
             self.filenames = filename
             self.validator(name)
@@ -62,7 +62,7 @@ class FileInput:
                 path_to = DataPath(datastore=self.data_store, 
                                    path_on_datastore=f"{path_on_datasore}/{fname}")
                 
-                self.data.append(path_to.create_data_reference(data_reference_name=fname,                                                     datapath_compute_binding=compute_binding))
+                self.data.append(path_to.create_data_reference(data_reference_name=fname, datapath_compute_binding=compute_binding))
         else:
             raise ValueError(f"Incorrect data type for filename: {type(filename)}. Should be one of: str, list, tuple or set")
 
@@ -87,12 +87,19 @@ class FileInput:
 
 class PathInput:
     """ Sone path from datastore """
-    def __init__(self, name: str, datastore_name: str, path_on_datasore: str):
-        e = env
+    def __init__(self, name: str, datastore_name: str, path_on_datasore: str, denv_path: str):
+        e = get_env(pipe_path=denv_path)
         self.workspace = self.__get_workspace(e)
         self.datastore = Datastore.get(self.workspace, datastore_name)
         self.path = path_on_datasore
         self.name = name
+
+        datapath = DataPath(datastore_name,path_on_datasore,name)
+        compute_binding = DataPathComputeBinding(mode="mount")
+
+        self.data = datapath.create_data_reference(data_reference_name = name, 
+                                                       datapath_compute_binding=compute_binding)
+
 
     def __get_workspace(self, e):
         interactive_auth = InteractiveLoginAuthentication(tenant_id=e.tenant_id)

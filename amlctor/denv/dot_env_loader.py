@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import os
 from typing import Optional
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 
 
 @dataclass(frozen=True)
@@ -16,10 +16,10 @@ class Env:
     tenant_id: Optional[str] = os.environ.get("TENANT_ID")
 
 
-def get_env(denv_path: str):
-    print('loading env...')
-    load_dotenv(denv_path)
-    e = Env()
-    print(e)
+def get_env(pipe_path: str):
+    if not load_dotenv(pipe_path): raise ValueError('Upps env...')
+    d = dotenv_values(pipe_path)
+    d = {k.lower(): v for k, v in d.items()}
+    e = Env(**d)
     return e
 

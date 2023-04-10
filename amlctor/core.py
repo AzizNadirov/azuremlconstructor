@@ -82,10 +82,10 @@ class Pipe:
         self.description = description
         self.steps = steps
         self.continue_on_step_failure = continue_on_step_failure
-        self.workspace = self.get_workspace()
-        self.env = get_env(path / 'settings/.env')
         self.continue_on_step_failure = continue_on_step_failure
         self.path = path
+        self.workspace = self.get_workspace()
+        self.env = get_env(path / 'settings/.env')
         assert isinstance(commit, bool)
         if commit:
             self.pipeline = self.create_pipeline()
@@ -124,6 +124,10 @@ class Pipe:
             auth=interactive_auth
         )
         return workspace
+    
+
+    def __str__(self):
+        return f"<{self.name}: {self.steps}>"
     
 
 
