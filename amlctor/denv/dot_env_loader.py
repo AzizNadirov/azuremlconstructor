@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 
 @dataclass(frozen=True)
 class Env:
-    load_dotenv()
     workspace_name: Optional[str] = os.environ.get("WORKSPACE_NAME")
     resource_group: Optional[str] = os.environ.get("RESOURCE_GROUP")
     subscription_id: Optional[str] = os.environ.get("SUBSCRIPTION_ID")
@@ -17,6 +16,10 @@ class Env:
     tenant_id: Optional[str] = os.environ.get("TENANT_ID")
 
 
-def get_env():
-    return Env()
+def get_env(denv_path: str):
+    print('loading env...')
+    load_dotenv(denv_path)
+    e = Env()
+    print(e)
+    return e
 

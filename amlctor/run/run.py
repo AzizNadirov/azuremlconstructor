@@ -79,9 +79,10 @@ class RunHandler:
 
     def build_pipe(self) -> Pipe:
         pipe_instance = Pipe(
-            name = self.settingspy['name'],
-            description = self.settingspy['description'],
-            steps = self.settingspy['steps'],
+            name = self.settingspy['NAME'],
+            description = self.settingspy['DESCRIPTION'],
+            steps = self.settingspy['STEPS'],
+            path=self.path,
             continue_on_step_failure = self.settingspy['EXTRA']['continue_on_step_failure'],
             commit = False
         )

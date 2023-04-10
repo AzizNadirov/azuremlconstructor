@@ -47,6 +47,7 @@ class StructureInit:
 
         else:
             eb_dict = env.as_dict()
+            eb_dict['pipe_name'] = self.pipe_name
 
             content_de = dot_env_t.render(**eb_dict)
 

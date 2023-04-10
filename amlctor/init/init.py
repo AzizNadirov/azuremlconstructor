@@ -86,12 +86,10 @@ class EnvBank:
 
 
         try:
-            print(json_str,'\n')
             parsed_dict = EnvSchema.parse_raw(json_str).dict()  
             return EnvBank(**parsed_dict)
         
         except pydantic.error_wrappers.ValidationError as e:
-            print(e)
             return -1
 
 
@@ -139,7 +137,20 @@ class EnvBank:
             eb = EnvBank.try_parse_env(decoded_env)
             return eb
         else:
-            raise ValueError(f"There is no Env with such name: {file}")
+            raise SystemExit(f"There is no Env with such name: {file}")
+        
+
+    def as_dict(self):
+        d = {'name':                self.name,
+            'subscription_id':      self.subscription_id,
+            'resource_group':       self.resource_group,
+            'build_id':             self.build_id,
+            'workspace_name':       self.workspace_name,
+            'environment_name':     self.environment_name,
+            'tenant_id':            self.tenant_id,
+            'environment_file':     self.environment_file}
+        
+        return d
         
     
 
@@ -156,7 +167,7 @@ class EnvBank:
                 workspace_name:         {self.workspace_name}
                 environment_name:       {self.environment_name}
                 tenant_id:              {self.tenant_id} 
-                'environment_file:      {self.environment_file}
+                environment_file:      {self.environment_file}
                 """
     
 

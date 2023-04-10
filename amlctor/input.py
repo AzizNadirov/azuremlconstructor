@@ -17,7 +17,7 @@ from amlctor.exceptions import IncorrectTypeArgumentException
 from amlctor.schemas import IncorrectArgumentTypeSchema
 
 
-env = get_env()
+
 
 
 
@@ -28,6 +28,7 @@ class FileInput:
                 filename: Union[list, str],
                 datastore_name: str, 
                 path_on_datasore: str, 
+                denv_path: str,
                 data_reference_name: str = ''):
         """
             name:                   name your input instance
@@ -40,7 +41,7 @@ class FileInput:
         if data_reference_name == '':
             data_reference_name = name
             
-        e = env
+        e = get_env(denv_path=denv_path)
         compute_binding = DataPathComputeBinding(mode="mount")
         self.data_reference_name = data_reference_name
 

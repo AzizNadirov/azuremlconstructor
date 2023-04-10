@@ -35,7 +35,7 @@ class Step:
         self.compute_target = compute_target
         self.input = input_data
         self.allow_reuse = allow_reuse
-        e = get_env()
+        e = get_env(path / 'settings/.env')
         self.env = Environment.from_conda_specification(e.environment_name, e.environment_file)
         self.step = self.build_step(path)
 
@@ -83,7 +83,7 @@ class Pipe:
         self.steps = steps
         self.continue_on_step_failure = continue_on_step_failure
         self.workspace = self.get_workspace()
-        self.env = get_env()
+        self.env = get_env(path / 'settings/.env')
         self.continue_on_step_failure = continue_on_step_failure
         self.path = path
         assert isinstance(commit, bool)
@@ -115,7 +115,7 @@ class Pipe:
 
 
     def get_workspace(self):
-        e = get_env()
+        e = get_env(self.path / 'settings/.env')
         interactive_auth = InteractiveLoginAuthentication(tenant_id=e.tenant_id)
         workspace = Workspace.get(
             name=e.workspace_name,
