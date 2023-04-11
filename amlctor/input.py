@@ -16,6 +16,8 @@ from amlctor.denv.dot_env_loader import get_env
 from amlctor.exceptions import IncorrectTypeArgumentException
 from amlctor.schemas import IncorrectArgumentTypeSchema
 
+from amlctor.utils import filename2identifier
+
 
 
 
@@ -59,10 +61,11 @@ class FileInput:
         elif isinstance(filename, (list, tuple, set)):
             self.data = []
             for fname in filename:
+                self.name = filename2identifier(fname)
                 path_to = DataPath(datastore=self.data_store, 
-                                   path_on_datastore=f"{path_on_datasore}/{fname}")
+                                   path_on_datastore=f"{path_on_datasore}")
                 
-                self.data.append(path_to.create_data_reference(data_reference_name=fname, datapath_compute_binding=compute_binding))
+                self.data.append(path_to.create_data_reference(data_reference_name=self.name, datapath_compute_binding=compute_binding))
         else:
             raise ValueError(f"Incorrect data type for filename: {type(filename)}. Should be one of: str, list, tuple or set")
 
@@ -82,6 +85,10 @@ class FileInput:
         if not (isinstance(name, str) and name.isidentifier()):
             raise ValueError(f"Incorrect value for 'name': {name}")
         
+    
+    def __str__(self):
+        return f"FileInput {self.name}:{self.data_store}|{self.filenames}"
+        
 
 
 
@@ -94,7 +101,7 @@ class PathInput:
         self.path = path_on_datasore
         self.name = name
 
-        datapath = DataPath(datastore_name,path_on_datasore,name)
+        datapath = DataPath(self.datastore, path_on_datasore,name)
         compute_binding = DataPathComputeBinding(mode="mount")
 
         self.data = datapath.create_data_reference(data_reference_name = name, 

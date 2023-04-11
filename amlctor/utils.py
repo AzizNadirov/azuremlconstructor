@@ -105,6 +105,21 @@ def valid_path(path: str, not_exist_ok=False) -> Path:
 	if not path.exists():
 		raise ValueError(f'Specified path does not exist: \n{path}')
 	return path
+
+
+
+def filename2identifier(filename: str, drop_ext=True) -> str:
+    """Converts filename into identifier"""
+    if drop_ext is True:
+        filename = filename.split('.')[0]
+    
+    filename = filename.replace('-', '_')    
+    identifier = re.sub(r'\W+', '', filename)
+    if re.match(r'^\d+', identifier):
+        identifier = "_" + identifier
+
+
+    return identifier
 	
 		 
 

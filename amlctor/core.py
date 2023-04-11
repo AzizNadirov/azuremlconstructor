@@ -40,14 +40,31 @@ class Step:
         self.step = self.build_step(path)
 
 
+    def step_unpack_inputs(self) -> list:
+        """ collects all data inputs into one list """
+        input_list = []
+        for inp in self.input:
+            if isinstance(inp, FileInput):
+                input_list.extend(inp.data)
+            elif isinstance(inp, PathInput):
+                input_list.append(inp.data)
+        
+            else:
+                raise ValueError('Unexpected data input type: ', type(inp))
+
+        print(input_list)
+        return input_list
+
+
+
     def build_step(self, path: Path):
         settingspy = get_settingspy_module(path)
-
+        inputs = self.step_unpack_inputs()
         step = PythonScriptStep(name=self.name,
                                 script_name=f"{self.name}/{settingspy['AML_MODULE_NAME']}.py",
                                 compute_target=self.compute_target,
                                 source_directory=None,
-                                inputs=[i.data for i in self.input],
+                                inputs=inputs,
                                 arguments=self.get_arguments(),
                                 runconfig=self.get_run_config(),
                                 allow_reuse=self.allow_reuse)
@@ -62,9 +79,9 @@ class Step:
 
     def get_arguments(self):
         arguments = []
-        for data in self.input:
-            arguments.append(f"--{data.name}")
-            arguments.append(data.data)
+        arguments.extend(self.step_unpack_inputs())
+        names = [inp.name for inp in self.input]
+        arguments.extend(names)
         return arguments
     
 

@@ -86,7 +86,7 @@ class RunHandler:
             steps = [self.step_fromschema(step) for step in self.settingspy['STEPS']],
             path=self.path,
             continue_on_step_failure = self.settingspy['EXTRA']['continue_on_step_failure'],
-            commit = False
+            commit = True
         )
 
         return pipe_instance
