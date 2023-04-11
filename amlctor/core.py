@@ -52,7 +52,6 @@ class Step:
             else:
                 raise ValueError('Unexpected data input type: ', type(inp))
 
-        print(input_list)
         return input_list
 
 
@@ -83,6 +82,12 @@ class Step:
         names = [inp.name for inp in self.input]
         arguments.extend(names)
         return arguments
+    
+    def get_arguments2(self):
+        arguments = []
+        for inp in self.input:
+            if isinstance(inp, FileInput):
+                # fileinput doesnt need multi arg name....
     
 
 

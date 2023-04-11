@@ -72,7 +72,7 @@ class RunHandler:
 
             
     def validate(self):
-        # def validate():
+        # def validate():   #TODO
         #     assert isinstance(pipeline, Pipe)
         #     if not bool(pipeline.steps):
         #         raise ValueError(f"There are no steps for run...")

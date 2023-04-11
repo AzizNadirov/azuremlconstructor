@@ -1,5 +1,5 @@
 # Loading input data
-from .{{dataloader_name}} import {% for k in keys %}{{ k }}{% if not loop.last %}, {% endif %}{% endfor %}
+from {{dataloader_name}} import {% for k in keys %}{{ k }}{% if not loop.last %}, {% endif %}{% endfor %}
 
 
 # feel free yourself for do some magic...

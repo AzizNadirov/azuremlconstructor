@@ -6,7 +6,7 @@ import pandas as pd
 parser = argparse.ArgumentParser()
 
 {% for k, v in inputs.items() %}
-parser.add.argument('--{{k}}', type=str)
+parser.add_argument('--{{k}}', type=str)
 {% endfor %}
 
 args = parser.parse_args()

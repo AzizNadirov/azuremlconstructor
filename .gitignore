@@ -5,4 +5,5 @@ idea/
 env/
 __pycache__/
 .idea/
+.env
 
