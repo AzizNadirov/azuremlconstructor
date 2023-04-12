@@ -1,41 +1,37 @@
 from amlctor.input import FileInputSchema, PathInputSchema
 from amlctor.core import StepSchema
 
-# module names:
+# --------------------------| Module Names |----------------------------
 AML_MODULE_NAME: str =       'aml'
 SCRIPT_MODULE_NAME: str =    'script'
 DATALOADER_MODULE_NAME: str = 'data_loader'
 
 
-# extra
 
-EXTRA = {
-            'continue_on_step_failure': False,
-}
-
-
-
+# ---------------------------| General |---------------------------------
 
 NAME = "{{pipe_name}}"
 DESCRIPTION = "Your pipeline description"
 
+
+# ---------------------------| DataInputs |-------------------------------
 
 file = FileInputSchema(
                         name='name', 
                         datastore_name='datastore', 
                         path_on_datastore='', 
                         files = ['file.ext'], 
-                        data_reference_name = 'datarefname'
+                        data_reference_name = ''
     )
 
 path = PathInputSchema(
-                        name='tags_path', 
+                        name='name', 
                         datastore_name='datastore', 
                         path_on_datastore='',
                         data_reference_name=''
     )
 
-
+# ---------------------------| Steps |---------------------------------
 step1 = StepSchema(
                         name='step_name', 
                         compute_target='compute_name', 
@@ -46,5 +42,13 @@ step1 = StepSchema(
 
 STEPS = [step1, ]
 
+
+
+# ---------------------------| extra |---------------------------------
+
+
+EXTRA = {
+            'continue_on_step_failure': False,
+}
 
 
