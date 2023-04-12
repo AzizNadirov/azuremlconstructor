@@ -9,7 +9,7 @@ from azureml.core import Workspace, Environment
 from azureml.core.authentication import InteractiveLoginAuthentication
 
 from amlctor.denv.dot_env_loader import get_env
-from amlctor.utils import get_settingspy_module
+from amlctor.utils import get_settingspy
 
 from amlctor.input import PathInput, FileInput, FileInputSchema, PathInputSchema
 
@@ -57,8 +57,8 @@ class Step:
 
 
     def build_step(self, path: Path):
-        settingspy = get_settingspy_module(path)
-        inputs = self.step_unpack_inputs()
+        settingspy = get_settingspy(path)
+        inputs = [inp.data for inp in self.input]
         step = PythonScriptStep(name=self.name,
                                 script_name=f"{self.name}/{settingspy['AML_MODULE_NAME']}.py",
                                 compute_target=self.compute_target,
@@ -78,16 +78,12 @@ class Step:
 
     def get_arguments(self):
         arguments = []
-        arguments.extend(self.step_unpack_inputs())
-        names = [inp.name for inp in self.input]
-        arguments.extend(names)
+        for data in self.input:
+            arguments.append(f"--{data.name}")
+            arguments.append(data.data)
+
         return arguments
     
-    def get_arguments2(self):
-        arguments = []
-        for inp in self.input:
-            if isinstance(inp, FileInput):
-                # fileinput doesnt need multi arg name....
     
 
 

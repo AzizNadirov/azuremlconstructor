@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Union
 
-from amlctor.utils import get_settingspy_module, is_pipe
+from amlctor.utils import get_settingspy, is_pipe
 from amlctor.core import PathInput, FileInput, Step, PathInputSchema, FileInputSchema, StepSchema, Pipe
 
 
@@ -11,7 +11,7 @@ class RunHandler:
     def __init__(self, path: Path):
         self.path = path
         self.check_path()
-        self.settingspy = get_settingspy_module(path)
+        self.settingspy = get_settingspy(path)
         self.env_path = path / 'settings/.env'
 
 

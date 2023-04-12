@@ -3,7 +3,7 @@ from typing import Union
 
 from amlctor.apply.apply import StructureApply
 
-from amlctor.utils import is_pipe, get_settingspy_module
+from amlctor.utils import is_pipe, get_settingspy
 from amlctor.exceptions import PathHasNoPipelineException, PipelineHasNoTheStepException
 from amlctor.schemas import PathHasNoPipelineSchema, PipelineHasNoTheStepSchema
 
@@ -39,7 +39,7 @@ class UpdateHandler:
             
 
     def update(self):
-        self.settingspy = get_settingspy_module(self.path)
+        self.settingspy = get_settingspy(self.path)
         if not self.for_step is True:           # Update for all steps
             steps = self.settingspy['STEPS']
             for step in steps:

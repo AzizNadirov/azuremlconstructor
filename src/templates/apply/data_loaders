@@ -1,20 +1,16 @@
 # Loads data inputs to the program
 import argparse
 import pandas as pd
-{# comment input_name: [filename, method_name] #}
+{# comment input_name: [filename, data_name, method_name, add_to_args] #}
 
 parser = argparse.ArgumentParser()
 
-{% for k, v in inputs.items() %}
-parser.add_argument('--{{k}}', type=str)
-{% endfor %}
+{% for k, v in inputs.items() %} {% if v[3]==1 %}
+parser.add_argument('--{{v[1]}}', type=str){% endif %}{% endfor %}
 
 args = parser.parse_args()
 
-{% for k, v in inputs.items() %}
-{% if v[1]==-1 %}
-{{k}} = args.{{k}}
-{% else %}
-{{k}} = pd.{{v[1]}}(args.{{k}} + "/{{v[0]}}")
-{% endif %}
+{% for k, v in inputs.items() %}{% if v[0]==-1 %}
+{{k}} = args.{{v[1]}}{% else %}
+{{k}} = pd.{{v[2]}}(args.{{v[1]}} + "/{{v[0]}}"){% endif %}
 {% endfor %}

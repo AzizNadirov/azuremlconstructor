@@ -27,7 +27,7 @@ from amlctor.utils import filename2identifier
 class FileInput:
     """ Adds file from the datastore """
     def __init__(self, name: str, 
-                filename: Union[list, str],
+                filename: Union[list, tuple, str],
                 datastore_name: str, 
                 path_on_datasore: str, 
                 denv_path: str,
@@ -39,7 +39,11 @@ class FileInput:
             path_on_datasore:       path to the file from the datastore
             data_reference_name:    data reference name, if not passed 'name' will be used 
         """
-        
+
+        self.name = name
+        self.filenames = filename
+        self.validate()
+
         if data_reference_name == '':
             data_reference_name = name
             
@@ -50,24 +54,9 @@ class FileInput:
         self.workspace = self.__get_workspace(e)
         self.data_store = Datastore.get(self.workspace, datastore_name)
         
-        if isinstance(filename, str):
-            path_to = DataPath(datastore=self.data_store, path_on_datastore=path_on_datasore)
-            self.data = [path_to.create_data_reference(data_reference_name=data_reference_name, 
-                                                       datapath_compute_binding=compute_binding),]
-            self.name = name
-            self.filenames = filename
-            self.validator(name)
-
-        elif isinstance(filename, (list, tuple, set)):
-            self.data = []
-            for fname in filename:
-                self.name = filename2identifier(fname)
-                path_to = DataPath(datastore=self.data_store, 
-                                   path_on_datastore=f"{path_on_datasore}")
-                
-                self.data.append(path_to.create_data_reference(data_reference_name=self.name, datapath_compute_binding=compute_binding))
-        else:
-            raise ValueError(f"Incorrect data type for filename: {type(filename)}. Should be one of: str, list, tuple or set")
+        path_to = DataPath(datastore=self.data_store, path_on_datastore=path_on_datasore)
+        self.data = path_to.create_data_reference(data_reference_name=data_reference_name, 
+                                                    datapath_compute_binding=compute_binding)
 
 
     def __get_workspace(self, e):
@@ -81,9 +70,15 @@ class FileInput:
         return workspace
 
 
-    def validator(self, name):
-        if not (isinstance(name, str) and name.isidentifier()):
-            raise ValueError(f"Incorrect value for 'name': {name}")
+    def validate(self)-> bool:
+        # name
+        if not (isinstance(self.name, str) and self.name.isidentifier()):
+            raise ValueError(f"Incorrect value for 'name': {self.name}")
+        # filenames
+        if not isinstance(self.filenames, (list, tuple, str)):
+            raise ValueError(f"Incorrect data type for filename:" 
+                             "{type(filename)}. Should be one of: str, list, tuple or set")
+        return True
         
     
     def __str__(self):

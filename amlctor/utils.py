@@ -4,7 +4,7 @@ import re
 
 
 	
-def get_settingspy_module(path: Path) -> dict:
+def get_settingspy(path: Path) -> dict:
 	""" 
 		returns names from the `settings.py` modul of the pipeline `path` directory 
 		path:           pipeline path
@@ -55,7 +55,7 @@ def is_pipe(path: Path, pipe_name: str = None, is_step: bool = False) -> bool:
 		return contains_pipe  # has an pipe and it's enough
 	
 	else:
-		settingspy = get_settingspy_module(path)					# we have the name for checking
+		settingspy = get_settingspy(path)					# we have the name for checking
 		if not isinstance(pipe_name, str):
 			raise ValueError(f"Incorrect pipeline name '{pipe_name}' type: '{type(pipe_name)}'")
 		

@@ -4,10 +4,10 @@ from jinja2 import Environment, FileSystemLoader
 
 from amlctor.core import StepSchema
 from confs.configs import TEMPLATES_DIR, STEP_NAME_MAX, STEP_NAME_MIN, STEP_NAME_KEYWORDS
-from amlctor.utils import get_settingspy_module, is_pipe, check_filename
+from amlctor.utils import get_settingspy, is_pipe, check_filename, filename2identifier
 from amlctor import exceptions as exceptions
 from amlctor import schemas
-from amlctor.input import FileInputSchema
+from amlctor.input import FileInputSchema, PathInputSchema
 
 
 
@@ -109,13 +109,21 @@ class StructureApply:
 
         res = {}
         data_list = step.input_data     # list of FileInput objects
+        # template api: input_name: [filename, data_name, method_name, add_to_argparse]
+        # PathInput doesn't have files, so 'filename' and 'method_name' = -1
         for data in data_list:
-            if data.__class__.__name__ == 'FileInputSchema':
+            if isinstance(data, FileInputSchema):
+                first_iter = True
                 for filename in data.files:
-                    res[filename.split('.')[0]] = [filename, get_pandas_reader(filename)]
+                    filename_idn = filename2identifier(filename)
+                    if first_iter is True:
+                        res[filename_idn] = [filename, data.name, get_pandas_reader(filename), 1]
+                        first_iter = False
+                    else:
+                        res[filename_idn] = [filename, data.name, get_pandas_reader(filename), 0]
 
-            elif data.__class__.__name__ == 'PathInputSchema':
-                res[data.name] = [-1, -1]    # pandas method for PathInput = -1
+            elif isinstance(data, PathInputSchema):
+                res[data.name] = [-1, data.name, -1, 1]    # pandas method for PathInput = -1
             
             else:
                 ValueError(f"InternalError: Unsupported DataInput object: {type(data)}")
@@ -126,7 +134,7 @@ class StructureApply:
         
 
     def start(self):
-        self.settingspy = get_settingspy_module(self.path)
+        self.settingspy = get_settingspy(self.path)
         self.pipe_name: str = self.path.name
         self.make_step_dirs()
 
@@ -147,7 +155,7 @@ class ApplyHandler:
 
     def validate(self):
         MAX_LEN = 128
-        settingspy = get_settingspy_module(self.path)
+        settingspy = get_settingspy(self.path)
         steps = settingspy['STEPS']
         for step in steps:
 
