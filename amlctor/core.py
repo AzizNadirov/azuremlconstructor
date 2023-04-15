@@ -28,7 +28,7 @@ class Step:
             name:               step name
             compute_target:     aml compute cluster name
             input_data:         data inputs for the step
-            allow_reuse:        TODO
+            allow_reuse:        if True in error case execution will start from current step
         """
         
         self.name = name

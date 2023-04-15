@@ -60,6 +60,7 @@ class RunHandler:
 
     def step_fromschema(self, step: StepSchema) -> Step:
         step_input = self.input_fromschema(step)      # realise input data
+        if step_input is None: step_input = []
         step_instance = Step(
             path = self.path,
             name = step.name,
