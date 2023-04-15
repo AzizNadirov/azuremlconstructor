@@ -144,7 +144,7 @@ For list all existing denv names add -`-all` argument:
 python -m amlctor denv get --all
 ```
 
-**Note**: *for wiev the denv, you have to type password*.
+**Note**: *for view the denv, you have to type password*.
 
 ### Remove denv
 
