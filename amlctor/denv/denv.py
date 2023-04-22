@@ -49,18 +49,18 @@ class DenvHandler:
 
 
     def create(self, path: Path, name: str):
+        """path - path of folder wich contains .env or .env file path itself """
         if path.name == '.env' or (path / '.env').exists():
             if path.name == '.env': p = path
             else: p = path / '.env'
             denv = dotenv_values(p)
-            # lower keys
-            denv = {k.lower(): v for k, v in denv.items()}
-            denv['environment_file'] = None
+            denv['ENVIRONMENT_FILE'] = None
             eb = EnvBank(name=name, **denv)
             while True:
                 pass1 = input("Type new password for denv encryption: ")
                 pass2 = input("ReType it again: ")
                 if pass1 == pass2:
+                    print(eb)
                     eb.save(pass1)
                     break
                 else:
@@ -100,7 +100,8 @@ class DenvHandler:
 
 
 
-    def get(self, n: str, a: bool):
+    def get(self, n: str, a: bool) -> None:
+        """ prints denv/denvs """
         if a is True:
             for file in BANK_DIR.iterdir():
                 if file.name.endswith('.e'):
@@ -110,7 +111,7 @@ class DenvHandler:
             eb = EnvBank.load(name=n, password=password)
             if not isinstance(eb, EnvBank):
                 raise SystemExit("Incorrect denv...")
-
+            
 
     def remove(self, n: str):
         path = (BANK_DIR / f'{n}.e')
