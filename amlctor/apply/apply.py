@@ -127,7 +127,7 @@ class StructureApply:
             
             else:
                 ValueError(f"InternalError: Unsupported DataInput object: {type(data)}")
-            
+        
         content = dataloader_t.render(inputs=res)
         return content, list(res.keys())
     
@@ -178,6 +178,14 @@ class ApplyHandler:
             elif name in STEP_NAME_KEYWORDS:
                 raise exceptions.IncorrectStepNameException(step_name = name,
                                                             message =   schemas.IncorrectStepNameSchema.IsKeyWord)
+        # check if steps have same names:
+        tmp_steplst = []
+        for step in steps:
+            if step.name in tmp_steplst:
+                raise ValueError(f"Dublicate step name: '{step.name}'. Step names must be unique!")
+            else:
+                tmp_steplst.append(step.name)
+            
         # validate files in steps
         for step in steps:
             for inp in step.input_data:
@@ -187,6 +195,15 @@ class ApplyHandler:
                             raise exceptions.IncorrectFileNameException(
                                 message=schemas.IncorrectFileNameSchema.message,
                                 filename=filename)
+        # validate data input names for uniqueness
+        for step in steps:
+            tmp_datainputlst = []
+            for inp in step.input_data:
+                if inp.name in tmp_datainputlst:
+                    raise ValueError(f"Dublicate DataInput name: '{inp.name}'. Input names of the step must be unique!")
+                else:
+                    tmp_datainputlst.apend(inp.name)
+
 
 
     def start(self):

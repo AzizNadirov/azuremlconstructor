@@ -84,7 +84,7 @@ def parse_args():
 
 class ArgsHandler:
 
-    COMMANDS: tuple = ('init', 'apply', 'run', 'rename', 'denv')
+    COMMANDS: tuple = ('init', 'apply', 'run', 'rename', 'denv', 'update')
 
     def __init__(self, args: Namespace):
         self.args = args

@@ -24,19 +24,34 @@ class UpdateHandler:
 
 
     def validate(self) -> bool:
-        if not self.for_step is True:   # for all steps
+        def validate_DIU(path: Path):
+                """ Validate DataInput names uniqueness """
+                steps = get_settingspy(path)['STEPS']
+                for step in steps:
+                    tmp_datainputlst = []
+                    for inp in step.input_data:
+                        if inp.name in tmp_datainputlst:
+                            raise ValueError(f"Dublicate DataInput name: '{inp.name}'. Input names of the step must be unique!")
+                        else:
+                            tmp_datainputlst.append(inp.name)
+
+        if self.for_step is False:   # for all steps
             if not is_pipe(self.path):
                 raise PathHasNoPipelineException(path=self.path,
-                                                 message=PathHasNoPipelineSchema.message)
+            
+                                               message=PathHasNoPipelineSchema.message)
+            validate_DIU(self.path)
             return True
-
         else:
             if not is_pipe(self.path, self.for_step, is_step=True):
                 pipe_name = self.path.name
                 raise PipelineHasNoTheStepException(pipe_name=pipe_name, step_name=self.for_step,
                                                     message=PipelineHasNoTheStepSchema.message)
+            validate_DIU(self.path)
+            
             return True
             
+
 
     def update(self):
         self.settingspy = get_settingspy(self.path)
@@ -45,12 +60,12 @@ class UpdateHandler:
             for step in steps:
                 dataloader = self.path / step.name / f"{self.settingspy['DATALOADER_MODULE_NAME']}.py"
                 content, _ = StructureApply.create_dataloader_content(step)
-                with dataloader.open(mode='w+') as dataloader_file:
+                with dataloader.open(mode='w') as dataloader_file:
                     dataloader_file.write(content)
         else:
             dataloader = self.path / self.for_step / f"{self.settingspy['DATALOADER_MODULE_NAME']}.py"
             content, _ = StructureApply.create_dataloader_content(step)
-            with dataloader.open(mode='w+') as dataloader_file:
+            with dataloader.open(mode='w') as dataloader_file:
                 dataloader_file.write(content)
 
             
