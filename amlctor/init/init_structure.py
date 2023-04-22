@@ -18,7 +18,7 @@ class StructureInit:
     
 
     def start(self):
-        base = Path(f'{self.path}/{self.pipe_name}')
+        base = self.path / self.pipe_name
         self.make_init_dirs(base)
         self.handle_env(self.env, base)
         self.create_conda_deps(base)
@@ -32,26 +32,26 @@ class StructureInit:
 
     def handle_env(self, env, base: Path):
         dot_env_t = self.j_env.get_template("dot_env")
-        if env is None:
+        if env is None:             # env not passed
             # write raw templates if no env passed.
             with open(f"{TEMPLATES_DIR}/init/dot_env") as content_f:
                 content_de = content_f.read()
 
-            with (base / "settings/.env").open(mode='w+') as f:
+            with (base / "settings/.env").open(mode='w') as f:
                 f.write(content_de)
 
-            with (base / "settings/env_vars.py").open('w+') as f:
+            with (base / "settings/env_vars.py").open('w') as f:
                 with open(f"{TEMPLATES_DIR}/init/env_vars") as content_f:
                     content_ev = content_f.read()
                 f.write(content_ev)
 
-        else:
+        else:       # env passed
             eb_dict = env.as_dict()
-            eb_dict['pipe_name'] = self.pipe_name
+            eb_dict['ENVIRONMENT_FILE'] = (base / 'settings/conda_dependencies.yml').resolve()  # abs path
 
             content_de = dot_env_t.render(**eb_dict)
 
-            with (base / "settings/.env").open('w+') as f:
+            with (base / "settings/.env").open('w') as f:
                 f.write(content_de)
 
 

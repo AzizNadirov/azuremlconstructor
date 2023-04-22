@@ -197,3 +197,13 @@ Slugged file names will be used as variable names for importing files.
 
 ## Other commands
 
+### Update
+
+You can update `dataloader` according to the `settings.py` module. It can be useful when you maked some changes into `settings.py` and don't want to overwrite whole pipeline structure by scratch, in this case you can use `update`:
+
+```bash
+python -m update -p path_pipe -s step_name [Optional]
+```
+
+`step_name` argument is optional, if not passed, updating will apply for all steps, otherwise - only for passed step.
+

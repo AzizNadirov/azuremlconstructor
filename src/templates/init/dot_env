@@ -1,10 +1,10 @@
-SUBSCRIPTION_ID = {{subscription_id}}
-RESOURCE_GROUP = {{resource_group}}
+SUBSCRIPTION_ID = {{SUBSCRIPTION_ID}}
+RESOURCE_GROUP = {{RESOURCE_GROUP}}
 
-BUILD_ID = {{build_id}}
+BUILD_ID = {{BUILD_ID}}
 
 # Azure ML Workspace Variables
-WORKSPACE_NAME = {{workspace_name}}
-ENVIRONMENT_NAME = {{environment_name}}
-ENVIRONMENT_FILE = '{{pipe_name}}/settings/conda_dependencies.yml'
-TENANT_ID = {{tenant_id}}
+WORKSPACE_NAME = {{WORKSPACE_NAME}}
+ENVIRONMENT_NAME = {{ENVIRONMENT_NAME}}
+ENVIRONMENT_FILE = '{{ENVIRONMENT_FILE}}'
+TENANT_ID = {{TENANT_ID}}

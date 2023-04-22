@@ -1,6 +1,8 @@
 import base64
 import os
 import json
+from pathlib import Path
+from typing import Optional
 
 import pydantic
 from pydantic import BaseModel
@@ -14,28 +16,28 @@ class EnvBank:
 
     class EnvSchema(BaseModel):
             name: str
-            subscription_id: str
-            resource_group: str
-            build_id: str
-            workspace_name: str
-            environment_name: str
-            tenant_id: str
-            environment_file: str = None
+            SUBSCRIPTION_ID: str
+            RESOURCE_GROUP: str
+            BUILD_ID: str
+            WORKSPACE_NAME: str
+            ENVIRONMENT_NAME: str
+            TENANT_ID: str
+            ENVIRONMENT_FILE: str = None
 
 
-    def __init__(self, name: str, subscription_id: str, resource_group: str, build_id: str,
-                 workspace_name: str, environment_name: str, tenant_id: str, environment_file: str=None):
+    def __init__(self, name: str, SUBSCRIPTION_ID: str, RESOURCE_GROUP: str, BUILD_ID: str,
+                 WORKSPACE_NAME: str, ENVIRONMENT_NAME: str, TENANT_ID: str, ENVIRONMENT_FILE: str=None):
 
         EnvBank.valid_name(name.strip())
 
         self.name = name.strip()
-        self.subscription_id = subscription_id
-        self.resource_group = resource_group
-        self.build_id = build_id
-        self.workspace_name = workspace_name
-        self.environment_name = environment_name
-        self.tenant_id = tenant_id
-        self.environment_file = environment_file
+        self.SUBSCRIPTION_ID = SUBSCRIPTION_ID
+        self.RESOURCE_GROUP = RESOURCE_GROUP
+        self.BUILD_ID = BUILD_ID
+        self.WORKSPACE_NAME = WORKSPACE_NAME
+        self.ENVIRONMENT_NAME = ENVIRONMENT_NAME
+        self.TENANT_ID = TENANT_ID
+        self.ENVIRONMENT_FILE = ENVIRONMENT_FILE
 
 
 
@@ -49,10 +51,11 @@ class EnvBank:
 
     def encoder(self, password):
         d = {
-            "name": self.name, 'subscription_id': self.subscription_id,
-            "resource_group": self.resource_group, 'build_id': self.build_id,
-            "workspace_name": self.workspace_name, 'environment_name': self.environment_name,
-            "tenant_id": self.tenant_id, 'environment_file': self.environment_file}
+            "name": self.name, 'SUBSCRIPTION_ID': self.SUBSCRIPTION_ID,
+            "RESOURCE_GROUP": self.RESOURCE_GROUP, 'BUILD_ID': self.BUILD_ID,
+            "WORKSPACE_NAME": self.WORKSPACE_NAME, 'ENVIRONMENT_NAME': self.ENVIRONMENT_NAME,
+            "TENANT_ID": self.TENANT_ID, 'ENVIRONMENT_FILE': self.ENVIRONMENT_FILE}
+        
         d = json.dumps(d)
         message = f"{d}"
         message_bytes = message.encode('utf-8')
@@ -75,14 +78,14 @@ class EnvBank:
 
 
         class EnvSchema(BaseModel):
-            name: str
-            subscription_id: str
-            resource_group: str
-            build_id: str
-            workspace_name: str
-            environment_name: str
-            tenant_id: str
-            environment_file: str = None
+            name: Optional[str]
+            SUBSCRIPTION_ID: str
+            RESOURCE_GROUP: str
+            BUILD_ID: str
+            WORKSPACE_NAME: str
+            ENVIRONMENT_NAME: str
+            TENANT_ID: str
+            ENVIRONMENT_FILE: str = None
 
 
         try:
@@ -142,39 +145,39 @@ class EnvBank:
 
     def as_dict(self):
         d = {'name':                self.name,
-            'subscription_id':      self.subscription_id,
-            'resource_group':       self.resource_group,
-            'build_id':             self.build_id,
-            'workspace_name':       self.workspace_name,
-            'environment_name':     self.environment_name,
-            'tenant_id':            self.tenant_id,
-            'environment_file':     self.environment_file}
+            'SUBSCRIPTION_ID':      self.SUBSCRIPTION_ID,
+            'RESOURCE_GROUP':       self.RESOURCE_GROUP,
+            'BUILD_ID':             self.BUILD_ID,
+            'WORKSPACE_NAME':       self.WORKSPACE_NAME,
+            'ENVIRONMENT_NAME':     self.ENVIRONMENT_NAME,
+            'TENANT_ID':            self.TENANT_ID,
+            'ENVIRONMENT_FILE':     self.ENVIRONMENT_FILE}
         
         return d
         
     
 
-    def set_environment_file(self, pipe_name: str):
+    def set_environment_file(self, pipe_path: Path):
         """ by default dev 'environment_file' = None. The method sets it for pipeline name """
-        self.environment_file = f'{pipe_name}/settings/conda_dependencies.yml'
+        self.ENVIRONMENT_FILE = (pipe_path / "settings/conda_dependencies.yml").resolve()
 
 
     def __str__(self):
         return f""" \t{self.name}\n
-                subscription_id:        {self.subscription_id}
-                resource_group:         {self.resource_group}
-                build_id:               {self.build_id}
-                workspace_name:         {self.workspace_name}
-                environment_name:       {self.environment_name}
-                tenant_id:              {self.tenant_id} 
-                environment_file:      {self.environment_file}
+                subscription_id:        {self.SUBSCRIPTION_ID}
+                resource_group:         {self.RESOURCE_GROUP}
+                build_id:               {self.BUILD_ID}
+                workspace_name:         {self.WORKSPACE_NAME}
+                environment_name:       {self.ENVIRONMENT_NAME}
+                tenant_id:              {self.TENANT_ID} 
+                environment_file:      {self.ENVIRONMENT_FILE}
                 """
     
 
     def __repr__(self) -> str:
-        return f"""EnvBamk<{self.name}>: subscription_id: {self.subscription_id}; resource_group: {self.resource_group}; 
-                build_id: {self.build_id}; workspace_name: {self.workspace_name}; environment_name: {self.environment_name}; 
-                tenant_id:{self.tenant_id}; environment_file: {self.environment_file}"""
+        return f"""EnvBamk<{self.name}>: subscription_id: {self.RESOURCE_GROUP}; resource_group: {self.BUILD_ID}; 
+                build_id: {self.WORKSPACE_NAME}; workspace_name: {self.ENVIRONMENT_NAME}; environment_name: {self.TENANT_ID}; 
+                tenant_id:{self.ENVIRONMENT_FILE}; environment_file: {self.ENVIRONMENT_FILE}"""
 
 
 class InitHandler:
@@ -188,18 +191,3 @@ class InitHandler:
 
 
 
-if __name__ == '__main__':
-
-    test_eb = EnvBank(
-        name='test_eb',
-        subscription_id='tst12345',
-        resource_group='test_res_group',
-        build_id='1234567',
-        workspace_name='test_wspace',
-        environment_name='test_env_name',
-        tenant_id='test_tenant_id'
-    )
-
-    test_eb.save('superpass')
-    eb = EnvBank.load('test_eb', 'superpas')
-    print(eb.name)

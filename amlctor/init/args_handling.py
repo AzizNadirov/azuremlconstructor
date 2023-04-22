@@ -159,7 +159,7 @@ class ArgsHandler:
                         raise SystemExit(1)
                     password_attempts -= 1
                     cmd = input(f"Incorrect password for: {name}. "
-                                f"You have {password_attempts} attempts.\nContinue: y|n ?")
+                                f"You have {password_attempts} attempts.\nContinue: y|n: ")
                     if cmd.lower() in ('y', 'yes'):
                         continue
                     else:
@@ -182,8 +182,6 @@ class ArgsHandler:
             name: str =     ArgsHandler.valid_pipe_name(self.args.name)
             path: Path =    ArgsHandler.valid_path(self.args.path)
             env: EnvBank =  ArgsHandler.valid_select_env(self.args.env)
-            if not env is None: 
-                env.set_environment_file(name)  # set denv file path
             
             handler = InitHandler(name=name, path=path, env=env)
 
