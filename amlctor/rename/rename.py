@@ -10,7 +10,6 @@ from amlctor import schemas
 class RenameHandler:
     def __init__(self,
                  path: Path,
-                 old_name: str,
                  new_name: str):
         
         """ 
@@ -19,7 +18,7 @@ class RenameHandler:
         """
 
         self.path = path
-        self.old_name = old_name
+        self.old_name = self.get_oldname()
         self.new_name = new_name
 
 
@@ -30,6 +29,11 @@ class RenameHandler:
                                                                path=self.path,
                                                                message=schemas.PathHasNoThePipelineSchema.message)
         self.new_name = ArgsHandler.valid_pipe_name(self.new_name)  # validate new_name
+
+
+    def get_oldname(self):
+        """ returns old name of the pipeline, based on the path """
+        return self.path.name
 
 
     def rename_dirs(self):

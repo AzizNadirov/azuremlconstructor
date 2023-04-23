@@ -106,7 +106,7 @@ Applying pipeline means - create structure based on the `settings.py` module. Fo
 python -m amlctor run -p <path_to_pipeline>
 ```
 
-This command will publish your pipeline into your AML. 
+This command will publish your pipeline into your AML.
 
 ## EnvBank
 
@@ -117,7 +117,7 @@ For work on AML pipeline you have to use your credentials: `workspace_name`, `re
 You can create denv in 2 ways: pass path of existing `.env` file or in interactive mode - via terminal. In the first case:
 
 ```bash
-python -m amlctor denv create -p <path_to_.env file> -n new_name
+python -m amlctor denv create -p <path_to_.env file> -n <new_name>
 ```
 
 Then you'll type new password twise for encryption. After that, denv will save into local storage and you will be able to use it for future pipeline creation.
@@ -135,7 +135,7 @@ After that you have to type each asked field and set password.
 For retrieve denv use:
 
 ```bash
-python -m amlctor denv get -n nameofdenv
+python -m amlctor denv get -n <name_of_denv>
 ```
 
 For list all existing denv names add -`-all` argument:
@@ -151,7 +151,7 @@ python -m amlctor denv get --all
 For removing denv:
 
 ```bash
-python -m amlctor denv rm -n nameofdenv
+python -m amlctor denv rm -n <name_of_denv>
 ```
 
 ## DataInputs
@@ -202,8 +202,15 @@ Slugged file names will be used as variable names for importing files.
 You can update `dataloader` according to the `settings.py` module. It can be useful when you maked some changes into `settings.py` and don't want to overwrite whole pipeline structure by scratch, in this case you can use `update`:
 
 ```bash
-python -m update -p path_pipe -s step_name [Optional]
+python -m amlctor update -p <path_to_pipe> -s step_name [Optional]
 ```
 
 `step_name` argument is optional, if not passed, updating will apply for all steps, otherwise - only for passed step.
 
+### Rename
+
+```bash
+python -m amlctor rename -p <path_to_pipe> -n <new_name>
+```
+
+Renames pipeline into `new_name`. Renaming pipeline means: rename pipeline project directory, change `NAME` variable in `settings.py` and edit `ENVIRONMENT_FILE` in the `.env` file.
