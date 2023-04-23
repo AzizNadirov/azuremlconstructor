@@ -34,15 +34,14 @@ def parse_args():
 
 
     rename_command = commands.add_parser('rename',
-                                         help='Rename step or pipeline.')
+                                         help='Rename pipeline.')
     rename_command.add_argument('-p', '--path', type=str, required=True,
                                 help="Path to the pipeline.")
     rename_command.add_argument('-o', '--old_name', type=str, required=True,
                                 help="Old pipeline step name.")
     rename_command.add_argument('-n', '--new_name', type=str, required=True,
                                 help="New pipeline step name.")
-    rename_command.add_argument('-s', '--step', required=False, action='store_true',
-                                help="pass this flag if it's name of step.")
+
     
 
     update_command = commands.add_parser('update',
@@ -209,14 +208,12 @@ class ArgsHandler:
             from amlctor.rename.rename import RenameHandler
 
             path: Path =    ArgsHandler.valid_path(self.args.path)
-            old_name: str = self.args.old
-            new_name: str = self.args.new
-            is_step: bool = self.args.step
+            old_name: str = self.args.old_name
+            new_name: str = self.args.new_name
 
             handler = RenameHandler(path=path, 
                                     old_name=old_name, 
-                                    new_name=new_name, 
-                                    is_step=is_step)
+                                    new_name=new_name)
         elif command == 'update':
             """ update  -p -s """
             from amlctor.update.update import UpdateHandler
