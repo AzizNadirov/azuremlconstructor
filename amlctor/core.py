@@ -36,7 +36,7 @@ class Step:
         self.input = input_data
         self.allow_reuse = allow_reuse
         e = get_env(path / 'settings/.env')
-        self.env = Environment.from_conda_specification(e.environment_name, e.environment_file)
+        self.env = Environment.from_conda_specification(e.ENVIRONMENT_NAME, e.ENVIRONMENT_FILE)
         self.step = self.build_step(path)
 
 
@@ -125,7 +125,7 @@ class Pipe:
         self._validate()
         published_pipe = self.pipeline.publish(name=self.name,
                                                description=self.description,
-                                               version=self.env.build_id,
+                                               version=self.env.BUILD_ID,
                                                continue_on_step_failure=self.continue_on_step_failure)
 
         print(f"Published: {published_pipe.name}")
@@ -134,11 +134,11 @@ class Pipe:
 
     def get_workspace(self):
         e = get_env(self.path / 'settings/.env')
-        interactive_auth = InteractiveLoginAuthentication(tenant_id=e.tenant_id)
+        interactive_auth = InteractiveLoginAuthentication(tenant_id=e.TENANT_ID)
         workspace = Workspace.get(
-            name=e.workspace_name,
-            subscription_id=e.subscription_id,
-            resource_group=e.resource_group,
+            name=e.WORKSPACE_NAME,
+            subscription_id=e.SUBSCRIPTION_ID,
+            resource_group=e.RESOURCE_GROUP,
             auth=interactive_auth
         )
         return workspace

@@ -50,11 +50,11 @@ class FileInput:
 
 
     def __get_workspace(self, e):
-        interactive_auth = InteractiveLoginAuthentication(tenant_id=e.tenant_id)
+        interactive_auth = InteractiveLoginAuthentication(tenant_id=e.TENANT_ID)
         workspace = Workspace.get(
-            name=e.workspace_name,
-            subscription_id=e.subscription_id,
-            resource_group=e.resource_group,
+            name=e.WORKSPACE_NAME,
+            subscription_id=e.SUBSCRIPTION_ID,
+            resource_group=e.RESOURCE_GROUP,
             auth=interactive_auth
         )
         return workspace
@@ -93,11 +93,11 @@ class PathInput:
 
 
     def __get_workspace(self, e):
-        interactive_auth = InteractiveLoginAuthentication(tenant_id=e.tenant_id)
+        interactive_auth = InteractiveLoginAuthentication(tenant_id=e.TENANT_ID)
         workspace = Workspace.get(
-            name=e.workspace_name,
-            subscription_id=e.subscription_id,
-            resource_group=e.resource_group,
+            name=e.WORKSPACE_NAME,
+            subscription_id=e.SUBSCRIPTION_ID,
+            resource_group=e.RESOURCE_GROUP,
             auth=interactive_auth
         )
         return workspace

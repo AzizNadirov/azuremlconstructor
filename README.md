@@ -5,6 +5,10 @@
 `amlctor` allows you to create Azure Machine Learning(shortly - `AML`)  [Pipeline](https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines?view=azureml-api-2). `amlctor` based on the [Azure Machine Learning SDK](https://learn.microsoft.com/en-us/azure/machine-learning/v1/how-to-create-machine-learning-pipelines?view=azureml-api-1&preserve-view=true), and implements main operations of the Pipeline creation. You can create pipelines with AML Steps, which can take DataInputs.
 In amlctor pipeline creation consists of 3 steps:
 
+### 0. Preporation
+
+It's highly recommended to create separated folder your pipeline projects. And also, virtual environment(venv). You can create separated venv for future AML projects. It's specially useful if you are working with different kinds of libraries: data science oriented, web and so on.
+
 ### 1. Pipeline initialisation
 
 Something like project initialisation. You choose pipeline name, directory and credential `.env` file. For storing amlctor has denv storage - or **EnvBank**. Initialise pipeline as:
@@ -170,7 +174,7 @@ class PathInputSchema:
     data_reference_name: str
 ```
 
-Where: `name` name of your PathInput, this name will be used as variable name for importing. `datastore_name` - Datastore name, `path_on_datastore` - target path related to the Datastore. `data_reference_name` - data reference name for `DataReference` class, optional - if empty, will be used name. 
+Where: `name` name of your PathInput, this name will be used as variable name for importing. `datastore_name` - Datastore name, `path_on_datastore` - target path related to the Datastore. `data_reference_name` - data reference name for `DataReference` class, optional - if empty, will be used name.
 
 ### FileInputSchema
 
@@ -185,7 +189,7 @@ class FileInputSchema:
     files: List[str]
 ```
 
-First 4 fields as previous. `files` - you can list file or files as list, which will be mounted from Datastore. If you want to get one file, pass as string, for more files - list of strings. When you pass multiple filename, they must be on the same path. 
+First 4 fields as previous. `files` - you can list file or files as list, which will be mounted from Datastore. If you want to get one file, pass as string, for more files - list of strings. When you pass multiple filename, they must be on the same path.
 
 **Supported file types**: `amlctor` uses `pandas` read methods for read the mounted files. At the moment, suported file types:
 
