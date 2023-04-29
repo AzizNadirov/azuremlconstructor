@@ -3,7 +3,7 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 
 from amlctor.core import StepSchema
-from confs.configs import TEMPLATES_DIR, STEP_NAME_MAX, STEP_NAME_MIN, STEP_NAME_KEYWORDS
+from amlctor.confs.configs import TEMPLATES_DIR, STEP_NAME_MAX, STEP_NAME_MIN, STEP_NAME_KEYWORDS
 from amlctor.utils import get_settingspy, is_pipe, check_filename, filename2identifier
 from amlctor import exceptions as exceptions
 from amlctor import schemas

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from confs import configs as confs
+from amlctor.confs import configs as confs
 
 
 # Schemas for Custom Exceptions

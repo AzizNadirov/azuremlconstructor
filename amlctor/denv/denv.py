@@ -3,7 +3,7 @@ from pathlib import Path
 from dotenv import dotenv_values
 
 from amlctor.init.init import EnvBank
-from confs.configs import BANK_DIR
+from amlctor.confs.configs import BANK_DIR
 from amlctor.utils import valid_path
 
 
@@ -54,6 +54,7 @@ class DenvHandler:
             if path.name == '.env': p = path
             else: p = path / '.env'
             denv = dotenv_values(p)
+            denv = {k.upper(): v for k, v in denv.items()}
             denv['ENVIRONMENT_FILE'] = None
             eb = EnvBank(name=name, **denv)
             while True:

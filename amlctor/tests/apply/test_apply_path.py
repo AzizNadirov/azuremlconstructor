@@ -4,7 +4,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
-from confs.configs import BASE_DIR
+from amlctor.confs.configs import BASE_DIR
 from amlctor.__main__ import main
 
 

@@ -7,7 +7,7 @@ from typing import Optional
 import pydantic
 from pydantic import BaseModel
 
-from confs.configs import BANK_DIR
+from amlctor.confs.configs import BANK_DIR
 
 from .init_structure import StructureInit
 

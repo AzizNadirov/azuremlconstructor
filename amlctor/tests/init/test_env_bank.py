@@ -3,9 +3,9 @@ from unittest import TestCase
 import os
 # import json
 
-from confs.configs import BANK_DIR
+from amlctor.confs.configs import BANK_DIR
 
-from core.init.init import EnvBank
+from amlctor.init.init import EnvBank
 
 
 class TestEnvBank(TestCase):

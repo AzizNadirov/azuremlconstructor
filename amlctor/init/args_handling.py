@@ -127,7 +127,7 @@ class ArgsHandler:
 
     @staticmethod
     def valid_select_env(name: str) -> EnvBank:
-        from confs.configs import BANK_DIR
+        from amlctor.confs.configs import BANK_DIR
 
         if name is None:    # env not passed
             return None
