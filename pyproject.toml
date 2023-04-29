@@ -1,0 +1,26 @@
+[build-system]
+requires = ["flit_core >=3.2,<3.11"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "amlctor"
+authors = [{name = "Aziz Nadirov", email = "aziznadirov@yahoo.com"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: MIT License"]
+dynamic = ["version", "description"]
+Source = "https://github.com/AzizNadirov/amlctor"
+
+
+requires-python = ">=3.9,<3.11"
+dependencies = [
+    "azureml-core >=1.49.0",
+    "azureml-pipeline >=1.49.0",
+    "python-dotenv >=1.0.0",
+    "pandas >=1.5.3",
+    "pyarrow >=9.0.0",
+    "pydantic >=1.10.5",
+    "Jinja2 >=3.1.2"
+]
+
+

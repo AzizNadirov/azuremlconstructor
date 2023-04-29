@@ -7,4 +7,3 @@ __pycache__/
 .idea/
 .env
 *.ipynb
-*.toml
