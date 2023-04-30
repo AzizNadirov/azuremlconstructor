@@ -34,9 +34,10 @@ class StructureApply:
 
 
     def create_files(self, step: StepSchema, step_path: Path):
-        script_name = self.settingspy['SCRIPT_MODULE_NAME']               # create script.py
-        if not script_name.endswith('.py'):
-                script_name = script_name + '.py'
+        """ creates modules """
+        # create script.py
+        script_name = self.settingspy['SCRIPT_MODULE_NAME']
+        script_name = self.ext(script_name, True) 
         if (step_path / script_name).exists():
             response = input(f"file '{(step_path / script_name)}' already exists. Type- overwrite: o; skip: s; cancel: c: ")
             if response.lower().strip() in ('o', 'overwrite'):
@@ -48,6 +49,8 @@ class StructureApply:
                 raise SystemExit("Cancelled.")
             else:
                 raise ValueError(f"Incorrect answer '{response}'. It must be one of [o, s, c]")
+        else:
+            (step_path / script_name).touch(exist_ok=True)
             
         # create data_loader.py
         dataloader_name = self.settingspy['DATALOADER_MODULE_NAME'] 
@@ -56,6 +59,7 @@ class StructureApply:
         
         with (step_path / dataloader_name).open(mode='w+') as dataloader:
             dataloader.write(content)
+
         # create aml.py
         aml_name = self.settingspy['AML_MODULE_NAME']
         aml_name = self.ext(aml_name, True)
@@ -69,7 +73,7 @@ class StructureApply:
     
     def ext(self, filename: str, yes=True):
         """ 
-            Returns filename with or without '.py extention'.
+            Returns filename with or without '.py` extention.
             yes: if True then add '.py', else drop out.
         """
         filename = filename.strip()     # just 4 fun

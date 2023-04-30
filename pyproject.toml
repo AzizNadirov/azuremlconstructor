@@ -7,10 +7,12 @@ name = "amlctor"
 authors = [{name = "Aziz Nadirov", email = "aziznadirov@yahoo.com"}]
 readme = "README.md"
 license = {file = "LICENSE"}
-classifiers = ["License :: OSI Approved :: MIT License"]
-dynamic = ["version", "description"]
-Source = "https://github.com/AzizNadirov/amlctor"
+classifiers = ["License :: OSI Approved :: MIT License",
+                "Development Status :: 4 - Beta",
+                "Intended Audience :: Developers",
+                "Operating System :: OS Independent"]
 
+dynamic = ["version", "description"]
 
 requires-python = ">=3.9,<3.11"
 dependencies = [
@@ -22,5 +24,10 @@ dependencies = [
     "pydantic >=1.10.5",
     "Jinja2 >=3.1.2"
 ]
+
+keywords = ["azure", "machine leaning", "aml", "pipeline"]
+
+[project.urls]
+Source = "https://github.com/AzizNadirov/amlctor"
 
 
