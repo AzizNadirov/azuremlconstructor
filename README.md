@@ -104,10 +104,28 @@ python -m amlctor apply -p <path_to_pipeline>
 
 Applying pipeline means - create structure based on the `settings.py` module. For each step will be created directory inside pipeline directory and each directory will contain: `aml.py`, `dataloader.py` and `script.py`. **Note**: names of the modules setted in the `settings.py` module.
 
-### 3. **Run** Pipeline
+After all, your project structure will be like:
 
 ```bash
-python -m amlctor run -p <path_to_pipeline>
+
+```
+
+### 3. **Run** Pipeline
+```directory
+myfirstpipe
+---|settings/
+------| settings.py
+------| .amlignore
+------| .env
+------| conda_dependencies.yml
+---| step_name/
+------| dataloader.py
+------| aml.py
+------| script.py
+---| step2_name/
+------| dataloader.py
+------| aml.py
+------| script.py
 ```
 
 This command will publish your pipeline into your AML.
