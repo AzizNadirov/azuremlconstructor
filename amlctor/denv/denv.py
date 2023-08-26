@@ -51,11 +51,9 @@ class DenvHandler:
 
 
     def create(self, path: Path, name: str):
-        """path - path of folder wich contains .env or .env file path itself """
-        if path.name == '.env' or (path / '.env').exists():
-            if path.name == '.env': p = path
-            else: p = path / '.env'
-            denv = dotenv_values(p)
+        """path - path to the .env file"""
+        if path.suffix == ".env":
+            denv = dotenv_values(path)
             denv = {k.upper(): v for k, v in denv.items()}
             denv['ENVIRONMENT_FILE'] = "settings/conda_dependencies.yml"
             eb = EnvBank(name=name, **denv)
@@ -68,6 +66,8 @@ class DenvHandler:
                     break
                 else:
                     print("Passwords are not same!")
+        else:
+            raise SystemExit("Incorrect path to *.env file.")
 
 
 
