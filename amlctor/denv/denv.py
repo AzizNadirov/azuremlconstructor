@@ -61,8 +61,9 @@ class DenvHandler:
                 pass1 = getpass.getpass("Type new password for denv encryption: ")
                 pass2 = getpass.getpass("ReType it again: ")
                 if pass1 == pass2:
-                    print(eb)
+                    print("Saving...")
                     eb.save(pass1)
+                    print("Done")
                     break
                 else:
                     print("Passwords are not same!")

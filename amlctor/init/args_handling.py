@@ -71,7 +71,7 @@ def parse_args():
 
 
     retrieve_parser = denv_subparsers.add_parser("get", help="Get the denv")
-    retrieve_parser.add_argument("-n", "--name", help="Name of the denv", required=False)
+    retrieve_parser.add_argument("name", help="Name of the denv", nargs='?', default=None)
     retrieve_parser.add_argument("-a", "--all", help="get all denv names", required=False, action='store_true')
     retrieve_parser.add_argument("--_subcommand", help=SUPPRESS, default='get', choices=['create', 'get', 'rm'])
 
