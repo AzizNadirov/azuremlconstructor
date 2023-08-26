@@ -20,8 +20,10 @@ def parse_args():
                                        help='Initialise pipeline. ')
     init_command.add_argument('-n', '--name', type=str, required=True,
                               help="Name of pipeline. Also, will be used as project directory name")
-    init_command.add_argument('-p', '--path', type=str, required=True,
+    
+    init_command.add_argument('-p', '--path', type=str, required=True, default='.',
                               help="Path where pipeline will be initialised. '.' for specify cwd.")
+    
     init_command.add_argument('-e', '--env', type=str, required=False,
                               help="Env file name for this pipeline. You will have to enter password for decrypt the "
                                    "env")
@@ -29,14 +31,19 @@ def parse_args():
 
     apply_command = commands.add_parser('apply',
                                         help='Apply configs from the settings file and build pipeline.')
-    apply_command.add_argument('-p', '--path', type=str, required=True,
+    
+    apply_command.add_argument('-p', '--path', type=str, required=True, default='.',
                                help="Path to the pipeline. '.' for choose cwd.")
 
 
+
+
     rename_command = commands.add_parser('rename',
+                                         
                                          help='Rename pipeline.')
     rename_command.add_argument('-p', '--path', type=str, required=True,
                                 help="Path to the pipeline.")
+    
     rename_command.add_argument('-n', '--new_name', type=str, required=True,
                                 help="New pipeline step name.")
 
@@ -121,7 +128,7 @@ class ArgsHandler:
 
         path = Path(path).resolve()
         if not path.exists():
-            raise ValueError(f'specified path does not exist: \n{path}')
+            raise ValueError(f'Provided path does not exist: \n{path}')
         return path
 
 
@@ -133,7 +140,7 @@ class ArgsHandler:
             return None
         
         if not name.isidentifier():
-            raise ValueError(f"env name must be identifier.")
+            raise ValueError(f"Denv name must be identifier.")
         
         path = BANK_DIR / f"{name}.e"
 
@@ -141,7 +148,7 @@ class ArgsHandler:
             # passed env doesnt exist. Show existing ones
             files = path.glob('*.e')
             files = [file.name for file in files if file.is_file()]
-            raise ValueError(f"env with name {name} doesn't exist. Envs in storage:\n{files}")
+            raise ValueError(f"Denv with name {name} doesn't exist. Envs in storage:\n\t{files}")
         else:
             password_attempts = 3
             while True:

@@ -3,7 +3,7 @@ requires = ["flit_core >=3.2,<3.11"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "amlctor"
+name = "aml-builder"
 authors = [{name = "Aziz Nadirov", email = "aziznadirov@yahoo.com"}]
 readme = "README.md"
 license = {file = "LICENSE"}
