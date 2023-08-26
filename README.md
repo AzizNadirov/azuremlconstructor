@@ -1,8 +1,8 @@
-# AMLCTOR
+# aml-constructor
 
 ## Azure Machine Learning Pipeline Constructor
 
-`amlctor` allows you to create Azure Machine Learning(shortly - `AML`)  [Pipeline](https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines?view=azureml-api-2). `amlctor` based on the [Azure Machine Learning SDK](https://learn.microsoft.com/en-us/azure/machine-learning/v1/how-to-create-machine-learning-pipelines?view=azureml-api-1&preserve-view=true), and implements main operations of the Pipeline creation. You can create pipelines with AML Steps, which can take DataInputs.
+`aml-constructor` - or shortly - `amlctor` allows you to create Azure Machine Learning(shortly - `AML`)  [Pipeline](https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines?view=azureml-api-2). `amlctor` based on the [Azure Machine Learning SDK](https://learn.microsoft.com/en-us/azure/machine-learning/v1/how-to-create-machine-learning-pipelines?view=azureml-api-1&preserve-view=true), and implements main operations of the Pipeline creation. You can create pipelines with AML Steps, which can take DataInputs.
 In amlctor pipeline creation consists of 3 steps:
 
 ### 0. Preporation
