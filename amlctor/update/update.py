@@ -3,7 +3,7 @@ from typing import Union
 
 from amlctor.apply.apply import StructureApply
 
-from amlctor.utils import is_pipe, get_settingspy
+from amlctor._utils import is_pipe, get_settingspy
 from amlctor.exceptions import PathHasNoPipelineException, PipelineHasNoTheStepException
 from amlctor.schemas import PathHasNoPipelineSchema, PipelineHasNoTheStepSchema
 

@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Union
 
-from amlctor.utils import get_settingspy, is_pipe
+from amlctor._utils import get_settingspy, is_pipe
 from amlctor.core import PathInput, FileInput, Step, PathInputSchema, FileInputSchema, StepSchema, Pipe
 
 

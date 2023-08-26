@@ -6,7 +6,7 @@ from dotenv import dotenv_values
 
 from amlctor.init.init import EnvBank
 from amlctor.confs.configs import BANK_DIR
-from amlctor.utils import valid_path
+from amlctor._utils import valid_path
 
 
 

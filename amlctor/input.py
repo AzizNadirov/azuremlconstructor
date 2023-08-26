@@ -9,7 +9,7 @@ from azureml.core.authentication import InteractiveLoginAuthentication
 
 from amlctor.denv.dot_env_loader import get_env
 
-from amlctor.utils import filename2identifier
+from amlctor._utils import filename2identifier
 
 
 
