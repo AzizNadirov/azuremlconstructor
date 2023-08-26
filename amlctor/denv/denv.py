@@ -1,4 +1,6 @@
 from pathlib import Path
+import keyring
+import getpass
 
 from dotenv import dotenv_values
 
@@ -28,7 +30,7 @@ class DenvHandler:
             raise SystemExit("denv needs subcommand. Run with '-h' for more info")
         if subcommand == 'create':
             if self.args['interactive'] is False:
-                if self.args['path'] is not None and self.args['name'] is not None:
+                if not (self.args['path'] is None) and not (self.args['name'] is None):
                     path = valid_path(self.args['path'])
                     self.create(path=path, name=self.args['name'])
                 else:
@@ -55,11 +57,11 @@ class DenvHandler:
             else: p = path / '.env'
             denv = dotenv_values(p)
             denv = {k.upper(): v for k, v in denv.items()}
-            denv['ENVIRONMENT_FILE'] = None
+            denv['ENVIRONMENT_FILE'] = "settings/conda_dependencies.yml"
             eb = EnvBank(name=name, **denv)
             while True:
-                pass1 = input("Type new password for denv encryption: ")
-                pass2 = input("ReType it again: ")
+                pass1 = getpass.getpass("Type new password for denv encryption: ")
+                pass2 = getpass.getpass("ReType it again: ")
                 if pass1 == pass2:
                     print(eb)
                     eb.save(pass1)
@@ -71,48 +73,54 @@ class DenvHandler:
 
     def i_create(self):
         """ Interactive EnvBank creation """
-        print("Interactive dotEnv creation selected.")
-        print("Fill default denv schema fields below.")
-        name = input("Name for denv(must be identifier): ")
+        print("Interactive dotEnv creation selected. Fill default denv schema fields below.")
+        name = input("\tName for denv(must be identifier): ")
         EnvBank.valid_name(name)
-        subscription_id = input("Subscription ID: ")
-        resource_group = input("Resource Group: ")
-        build_id = input("Build ID: ")
-        workspace_name = input("Workspace Name: ")
-        environment_name = input("Environment Name: ")
-        tenant_id = input('Tenant ID: ')
+        subscription_id = input("\tSubscription ID: ")
+        resource_group = input("\tResource Group: ")
+        build_id = input("\tBuild ID: ")
+        workspace_name = input("\tWorkspace Name: ")
+        environment_name = input("\tEnvironment Name: ")
+        tenant_id = input('\tTenant ID: ')
         # Create EnvBank instance
         eb = EnvBank(
-        name=name,
-        subscription_id=subscription_id,
-        resource_group=resource_group,
-        build_id=build_id,
-        workspace_name=workspace_name,
-        environment_name=environment_name,
-        tenant_id=tenant_id)
+                    name=name,
+                    SUBSCRIPTION_ID=subscription_id,
+                    RESOURCE_GROUP=resource_group,
+                    BUILD_ID=build_id,
+                    WORKSPACE_NAME=workspace_name,
+                    ENVIRONMENT_NAME=environment_name,
+                    TENANT_ID=tenant_id)
         while True:
-            pass1 = input("Type new password for denv encryption: ")
-            pass2 = input("ReType it again: ")
+            pass1 = getpass.getpass("Type new password for denv encryption: ")
+            pass2 = getpass.getpass("ReType it again: ")
             if pass1 == pass2:
                 eb.save(pass1)
                 break
             else:
-                print("Passwords are not same!")
+                print("Passwords are not the same!")
 
 
 
     def get(self, n: str, a: bool) -> None:
         """ prints denv/denvs """
         if a is True:
-            for file in BANK_DIR.iterdir():
-                if file.name.endswith('.e'):
-                    print(file.name)
+            # look for denv files files
+            fs = [f for f in list(BANK_DIR.iterdir()) if f.name.endswith('.e')]
+            if len(fs) == 0:    # if there is no any denv file
+                print("No denvs yet.")
+                return
+            for file in fs:
+                print("Denvs:")
+                print('\t', file.name)
         else:
-            password = input(f"Password for denv '{n}': ")
+            if n is None:
+                raise SystemExit(f"You have to provide denv name.")
+            password = getpass.getpass(f"Password for denv '{n}': ")
             eb = EnvBank.load(name=n, password=password)
             if not isinstance(eb, EnvBank):
-                raise SystemExit("Incorrect denv...")
-            
+                raise SystemExit("Encryption has failed. File is corrupted or password is incorrect.")
+            print(eb)
 
     def remove(self, n: str):
         path = (BANK_DIR / f'{n}.e')

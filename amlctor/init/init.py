@@ -3,6 +3,7 @@ import os
 import json
 from pathlib import Path
 from typing import Optional
+import getpass
 
 import pydantic
 from pydantic import BaseModel
@@ -22,11 +23,11 @@ class EnvBank:
             WORKSPACE_NAME: str
             ENVIRONMENT_NAME: str
             TENANT_ID: str
-            ENVIRONMENT_FILE: str = None
+            ENVIRONMENT_FILE: str = "settings/conda_dependencies.yml"
 
 
     def __init__(self, name: str, SUBSCRIPTION_ID: str, RESOURCE_GROUP: str, BUILD_ID: str,
-                 WORKSPACE_NAME: str, ENVIRONMENT_NAME: str, TENANT_ID: str, ENVIRONMENT_FILE: str=None):
+                 WORKSPACE_NAME: str, ENVIRONMENT_NAME: str, TENANT_ID: str, ENVIRONMENT_FILE: str="settings/conda_dependencies.yml"):
 
         EnvBank.valid_name(name.strip())
 
@@ -85,14 +86,16 @@ class EnvBank:
             WORKSPACE_NAME: str
             ENVIRONMENT_NAME: str
             TENANT_ID: str
-            ENVIRONMENT_FILE: str = None
+            ENVIRONMENT_FILE: str = "settings/conda_dependencies.yml"
 
 
         try:
             parsed_dict = EnvSchema.parse_raw(json_str).dict()  
             return EnvBank(**parsed_dict)
         
-        except pydantic.error_wrappers.ValidationError as e:
+        # except pydantic.error_wrappers.ValidationError as e:
+        except Exception as e:
+            print(e)
             return -1
 
 
@@ -103,8 +106,15 @@ class EnvBank:
         message_bytes = decoded_bytes[:-len(password)]
         message = message_bytes.decode('utf-8')
         return message
+    
+
+    def get_service_name_for(self, name: str=None)->str:
+        if name:    return f"amlctordenv__{name}"
+        else:       return f"amlctordenv__{self.name}"
+
 
     def save(self, password: str):
+        service_name = self.get_service_name_for()
         # encode env
         encoded_env = self.encoder(password)
         # savng 
@@ -123,11 +133,11 @@ class EnvBank:
                     print("Saving canceled.")
                     return None
                 else:
-                    print(f"Incorrect command: {r}. Enter y or n .")
+                    print(f"Incorrect command: {r}. Enter [Y/N]: ")
         else:
             with open(file, 'w+') as f:
                 f.write(encoded_env)
-                print(f"Env saved as '{file}'")
+                print(f"Denv saved as '{file}'")
 
 
     @staticmethod
@@ -159,7 +169,7 @@ class EnvBank:
 
     def set_environment_file(self, pipe_path: Path):
         """ by default dev 'environment_file' = None. The method sets it for pipeline name """
-        self.ENVIRONMENT_FILE = (pipe_path / "settings/conda_dependencies.yml").resolve()
+        self.ENVIRONMENT_FILE = "settings/conda_dependencies.yml"
 
 
     def __str__(self):

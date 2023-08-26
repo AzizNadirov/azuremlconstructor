@@ -174,8 +174,11 @@ class ArgsHandler:
     def valid_args(self):
         """ validates args and returns correspondig handler instance """
 
+        if self.args.command is None:
+            raise SystemExit("Where is command?? Run with '-h' for more info.")
         assert hasattr(self.args,
                        'command') and self.args.command in ArgsHandler.COMMANDS, f"Incorrect command: {self.args.command}"
+        
         command = self.args.command
 
 
