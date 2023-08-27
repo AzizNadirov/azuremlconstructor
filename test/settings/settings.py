@@ -67,7 +67,7 @@ step2 = StepSchema(
 
 
 
-STEPS = [find_dups, ]
+STEPS = [find_dups, step2]
 
 
 

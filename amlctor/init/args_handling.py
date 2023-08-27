@@ -78,7 +78,6 @@ def parse_args():
     delete_parser.add_argument("-n", "--name", help="Name of the denv", required=True)
     delete_parser.add_argument("--_subcommand", help=SUPPRESS, default='rm', choices=['create', 'get', 'rm'])
 
-
     args = parser.parse_args()
 
     return args

@@ -4,7 +4,27 @@ import re
 from typing import List, Tuple
 
 
-	
+
+
+def ext(filename: str, yes=True):
+        """ 
+            Returns filename with or without '.py` extention.
+            yes: if True then add '.py', else drop out.
+        """
+        filename = filename.strip()     # just 4 fun
+
+        if filename.endswith('.py'): # has extention
+            if yes is True:
+                return filename
+            else:
+                return filename.split('.')[0]
+        else:                           # has no extention
+            if yes is True:
+                return filename + '.py'
+            else:
+                return filename
+
+
 def get_settingspy(path: Path) -> dict:
 	""" 
 		returns names from the `settings.py` modul of the pipeline `path` directory 
@@ -80,31 +100,38 @@ def is_step(path: Path, stdout: bool = True) -> bool:
 			path: path to the step
 			stdout: if True, print result
 	"""
+	pipe_path = path.parent
+	settings = get_settingspy(pipe_path)
+	# add extention
+	aml_name = ext(settings['AML_MODULE_NAME'])
+	script_name = ext(settings['SCRIPT_MODULE_NAME'])
+	dataloader_name = ext(settings['DATALOADER_MODULE_NAME'])
+	
 	if not path.exists():	return False
 	# check if parent is pipeline
 	pipe_path = path.parent
 	settings = get_settingspy(pipe_path)
 	if stdout:
-		if (path / settings['SCRIPT_MODULE_NAME']).exists() and \
-			(path / settings['AML_MODULE_NAME']).exists() and \
-			(path / settings['DATALOADER_MODULE_NAME']).exists():
+		if (path / script_name).exists() and \
+			(path / aml_name).exists() and \
+			(path / dataloader_name).exists():
 			return True
 		return False
 	else:	# the same thing, but with prints
 		step_name = path.name.split('.')[0]
-		if (path / settings['SCRIPT_MODULE_NAME']).exists():
-			if (path / settings['AML_MODULE_NAME']).exists():
-				if (path / settings['DATALOADER_MODULE_NAME']).exists():
+		if (path / script_name).exists():
+			if (path /aml_name).exists():
+				if (path / dataloader_name).exists():
 					print(f"\t{step_name} is correct step: OK")
 					return True
 				else:
-					print(f"\t{path / settings['DATALOADER_MODULE_NAME']} doesn't exist")
+					print(f"\t{path / dataloader_name} doesn't exist")
 					return False
 			else:
-				print(f"\t{path / settings['AML_MODULE_NAME']} doesn't exist")
+				print(f"\t{path / aml_name} doesn't exist")
 				return False
 		else:
-			print(f"\t{path / settings['SCRIPT_MODULE_NAME']} doesn't exist")
+			print(f"\t{path / script_name} doesn't exist")
 			return False
 		
 
@@ -188,6 +215,7 @@ def get_not_applied_steps(path: Path) -> Tuple[str]:
 	for step in steps:
 		if not has_step(path, step.name):
 			unapplieds.append(step.name)
+
 	return tuple(unapplieds)
 
 

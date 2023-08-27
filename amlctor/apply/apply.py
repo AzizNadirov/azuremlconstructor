@@ -56,7 +56,8 @@ class StructureApply:
                 aml_name = self.ext(aml_name, True)
                 with (step_path / aml_name).open(mode='w+') as aml:
                     aml_t = StructureApply.jinva_env.get_template('aml')
-                    dataloader_name = self.ext(dataloader_name, yes=False)     # no extention for importing in template
+                    dataloader_name = self.ext(self.settingspy['DATALOADER_MODULE_NAME'], yes=False)     # no extention for importing in template
+                    _, keys = StructureApply.create_dataloader_content(step=step)
                     content = aml_t.render(dataloader_name=dataloader_name, keys=keys)
                     aml.write(content)
                     
@@ -72,7 +73,7 @@ class StructureApply:
                 # (step_path / self.settingspy['SCRIPT_MODULE_NAME']).touch(exist_ok=True)
                 script_name = self.settingspy['SCRIPT_MODULE_NAME'] 
                 script_name = self.ext(script_name, True)
-                script_t = StructureApply.jinva_env.get_template('aml')
+                script_t = StructureApply.jinva_env.get_template('script')
                 content = script_t.render()
                 with (step_path / script_name).open(mode='w+') as script:
                     script.write(content)
@@ -101,7 +102,7 @@ class StructureApply:
                     (step_path / file_name).touch(exist_ok=True)
         else:
             # create data_loader.py
-            create(lind='dataloader')
+            create(kind='dataloader')
             # create aml.py
             create(kind='aml')
             # create script.py

@@ -45,11 +45,14 @@ class UpdateHandler:
         """ check for new or controversial steps/datainput changes """
         # take care on steps
         notapplieds = get_not_applied_steps(path=self.path)
-        print(f"Steps that are not applied:\n\t{notapplieds}")
-        print(f"\tCreating modules...")
+        if len(notapplieds) > 0:    print(f"Steps that are not applied:\n\t{notapplieds}")
+        else:                      
+            print(f"All steps from settings.py implemented.")
+            if not self.overwrite: print(f"Creating modules. If you want to overwrite modules without ant prompt, wun with '--overwrite' flag.")
+            else:                  print(f"Overwriting modules.")  
+            
         StructureApply(path=self.path).make_step_dirs(for_steps=notapplieds, overwrite=self.overwrite)    # create files for un-appplieds
         print("\tDone")
-
         # take care of dataloaders
         print("Updating dataloader:")
         self.settingspy = get_settingspy(self.path)
