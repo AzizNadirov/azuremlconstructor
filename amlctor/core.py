@@ -1,8 +1,9 @@
 from pathlib import Path
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List, Union, Dict, Literal
 
 from azureml.pipeline.core import Pipeline
+from azureml.core.experiment import Experiment
 from azureml.pipeline.steps import PythonScriptStep
 from azureml.core.runconfig import RunConfiguration
 from azureml.core import Workspace, Environment
@@ -36,6 +37,7 @@ class Step:
         self.input = input_data
         self.allow_reuse = allow_reuse
         e = get_env(path / 'settings/.env')
+        e.ENVIRONMENT_FILE = path / e.ENVIRONMENT_FILE
         self.env = Environment.from_conda_specification(e.ENVIRONMENT_NAME, e.ENVIRONMENT_FILE)
         self.step = self.build_step(path)
 
@@ -121,7 +123,25 @@ class Pipe:
         self.pipeline.validate()
 
 
-    def _publish(self):
+    def submit(self, experiment_name: str, job_name: str = None, tags: dict = None, kwargs: dict = None)->str:
+        """ submit the pipeline 
+            Parameters:
+                experiment_name: name of the experiment
+                job_name: name of the job
+            Returns:
+                job url: str - url to the job (portal.azure.com)
+        """
+        if job_name is None:
+            job_name = self.name
+
+        experiment = Experiment(workspace=self.workspace, name=experiment_name)
+        if kwargs:      run = experiment.submit(self.pipeline, name=job_name, tags=tags, **kwargs)
+        else:           run = experiment.submit(self.pipeline, name=job_name, tags=tags)
+
+        return run.get_portal_url()
+
+
+    def _publish(self, submit: Dict[Literal['experiment_name', 'job_name', 'is_active', 'tags', 'kwargs'], str] = None):
         self._validate()
         published_pipe = self.pipeline.publish(name=self.name,
                                                description=self.description,
@@ -131,6 +151,11 @@ class Pipe:
         print(f"Published: {published_pipe.name}")
         print(f"With build: {published_pipe.version}")
 
+        # look for submitting options
+        if not submit is None:
+            url = self.submit(experiment_name=  submit['experiment_name'], 
+                              job_name=         submit['job_name'])
+            
 
     def get_workspace(self):
         e = get_env(self.path / 'settings/.env')

@@ -12,7 +12,7 @@ def parse_args():
 
     run_command = commands.add_parser('run',
                                       help='Run applied pipeline.')
-    run_command.add_argument('-p', '--path', type=str, required=True,
+    run_command.add_argument('path', type=str, nargs='?', default='.',
                              help="path of pipeline. '.' for specify current directory")
 
 

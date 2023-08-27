@@ -46,9 +46,11 @@ STEPS = [step1, ]
 
 # ---------------------------| extra |---------------------------------
 
+# 'submit' option will apply if set `is_active = True`
 
 EXTRA = {
             'continue_on_step_failure': False,
+            'submit': {'experiment_name': 'DebugPipeline', 'job_name': NAME, 'is_active': False, 'tags': None, 'kwargs': None}
 }
-
+  
 

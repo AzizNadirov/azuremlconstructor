@@ -23,7 +23,7 @@ class RunHandler:
 
     def input_fromschema(self, step: StepSchema) -> List[Union[PathInput, FileInput]]:
         if not bool(step.input_data):   # there are no any input data
-            return None         # TODO
+            return []
         
         inputs = []
 
@@ -95,7 +95,9 @@ class RunHandler:
 
 
     def publish(self, pipeline: Pipe):
-        pipeline._publish()
+        submit_options = self.settingspy['EXTRA']['submit']
+        if submit_options.get('is_active') is True:
+            pipeline._publish(submit=submit_options)
 
 
 

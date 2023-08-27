@@ -73,7 +73,9 @@ STEPS = [find_dups, step2]
 
 # ---------------------------| extra |---------------------------------
 
+# 'submit' option will apply if set `is_active = True`
 
 EXTRA = {
             'continue_on_step_failure': False,
+            'submit': {'experiment_name': 'DebugPipeline', 'job_name': NAME+' test', 'is_active': True, 'tags': None, 'kwargs': None}
 }
