@@ -21,7 +21,7 @@ class Step:
                  path: Path,
                  name: str, 
                  compute_target: str, 
-                 input_data: List[Union[PathInput, FileInput]], 
+                 input_data: List[PathInput | FileInput], 
                  allow_reuse: bool=False):
         
         """

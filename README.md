@@ -14,10 +14,10 @@ It's highly recommended to create separated folder your pipeline projects. And a
 Something like project initialisation. You choose pipeline name, directory and credential `.env` file. For storing amlctor has denv storage - or **EnvBank**. Initialise pipeline as:
 
 ```bash
-python -m amlctor init -n myfirstpipe -p . -e denv_name
+python -m amlctor init [path] -n myfirstpipe -e denv_name
 ```
 
-Here `-n` shows pipeline name, `-p` - directory in which pipeline will be created, `-e` - dotenv name. I will talk about denv's a little bit later. After this, in the passed directory will be created named as pipeline passed name.
+Here `-n` shows pipeline name, `path` - directory in which pipeline will be created - by default = `.`, `-e` - dotenv name. I will talk about denv's a little bit later. After this, in the passed directory will be created named as pipeline passed name.
 
 ```directory
 myfirstpipe
@@ -78,9 +78,11 @@ STEPS = [step1, ]
 
 # ---------------------------| extra |---------------------------------
 
+# 'submit' option will apply if set `is_active = True`
 
 EXTRA = {
             'continue_on_step_failure': False,
+            'submit': {'is_active': True, 'experiment_name': 'DebugPipeline', 'job_name': NAME, 'tags': None, 'kwargs': None}
 }
  ```
 
@@ -94,23 +96,26 @@ Lets look at the variables we have here.
 
 `PathInputSchema` and `FileInputSchema` DataInput of your pipeline. You create instances of the classes and pass into `StepSchema` class. Each `StepSchema` class is abstraction of [`PythonScriptStep`](https://learn.microsoft.com/en-us/python/api/azureml-pipeline-steps/azureml.pipeline.steps.python_script_step.pythonscriptstep?view=azure-ml-py). All steps must be inside `STEPS` list.
 
+#### `EXTRA` options
+
+There are extra - additional options that can be helpfull.
+
+- `continue_on_step_failure` - will continue in error case
+  
+- `submit` - submit options. Pipeline will be submitted, if `is_active` is `True`.
+
 After filling settings, you have to apply your settings.
 
 ### 2. **Apply** Settings
 
 ```bash
-python -m amlctor apply -p <path_to_pipeline>
+python -m amlctor apply <path_to_pipeline>
 ```
 
-Applying pipeline means - create structure based on the `settings.py` module. For each step will be created directory inside pipeline directory and each directory will contain: `aml.py`, `dataloader.py` and `script.py`. **Note**: names of the modules setted in the `settings.py` module.
+Applying pipeline means - create structure based on the `settings.py` module. For each step will be created directory inside pipeline directory and each directory will contain: `aml.py`, `dataloader.py` and `script.py`.
 
-After all, your project structure will be like:
+After applying, your project structure will be like this:
 
-```bash
-
-```
-
-### 3. **Run** Pipeline
 ```directory
 myfirstpipe
 ---|settings/
@@ -128,7 +133,14 @@ myfirstpipe
 ------| script.py
 ```
 
-This command will publish your pipeline into your AML.
+**Note**: names of the modules setted in the `settings.py` module.
+
+### 3. **Run** Pipeline
+
+bash```
+python -m amlctor run <path_to_pipeline>```
+
+This command will publish your pipeline into your AML. Additionally, can submit according to the `EXTRA.submit` option.
 
 ## EnvBank
 

@@ -24,10 +24,10 @@ dwh_files = FileInputSchema(
                         name='dwh_files', 
                         datastore_name=ds, 
                         path_on_datastore='dwh/', 
-                        files = ['mp_products_mpn_gtin.parquet', 
-                                 "mp_price_comparision_all_products_chars.parquet",
-                                 "ff_product_categories.csv",
-                                 'umico_ff_products.parquet'], 
+                        files = {'mp_products_mpn_gtin.parquet': 'products', 
+                                 "mp_price_comparision_all_products_chars.parquet": 'specs',
+                                 "ff_product_categories.csv": 'ff_cats',
+                                 'umico_ff_products.parquet': 'ff_products'}, 
                         data_reference_name = ''
     )
 

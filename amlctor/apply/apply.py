@@ -158,13 +158,41 @@ class StructureApply:
         for data in data_list:
             if isinstance(data, FileInputSchema):
                 first_iter = True
-                for filename in data.files:
+                # data.files == ['file.csv', 'file2.parquet', ...]:
+                if isinstance(data.files, (list, tuple)):
+                    for filename in data.files:
+                        filename_idn = filename2identifier(filename)
+                        if first_iter is True:
+                            res[filename_idn] = [filename, data.name, get_pandas_reader(filename), 1]
+                            first_iter = False
+                        else:
+                            res[filename_idn] = [filename, data.name, get_pandas_reader(filename), 0]
+
+                # data.files == 'file.csv':
+                elif isinstance(data.files, str):
+                    filename = data.files
                     filename_idn = filename2identifier(filename)
-                    if first_iter is True:
-                        res[filename_idn] = [filename, data.name, get_pandas_reader(filename), 1]
-                        first_iter = False
-                    else:
-                        res[filename_idn] = [filename, data.name, get_pandas_reader(filename), 0]
+                    res[filename_idn] = [filename, data.name, get_pandas_reader(filename), 1]
+
+                # data.files == {'file.ext': 'var_name', 'file2.ext': 'var_name2', ...}
+                elif isinstance(data.files, dict):
+                    # validate var_names - must be unique:
+                    if len(data.files.values()) != len(set(list(data.files.values()))):
+                        raise ValueError(f"Varable names must be unique: {list(data.files.values())}")
+                    for var_name in data.files.values():
+                        if not var_name.isidentifier():
+                            raise ValueError(f"Invalid variable name: {var_name}")
+                    
+                    for filename, var_name in data.files.items():
+                        filename_idn = filename2identifier(filename)
+                        # validate var_name with prev keys:
+                        if var_name in res.keys():
+                            raise ValueError(f"Varable name intersects with other variables, please rename it or use dict file - variable_name notation. Variable: '{var_name}' Variables: {list(res.keys())}")
+                        else:
+                            res[var_name] = [filename, data.name, get_pandas_reader(filename), 1]
+                else:
+                    raise ValueError(f"Got invalid FileInput.files of type: {type(data.files)} with value: {data.files}")
+            
 
             elif isinstance(data, PathInputSchema):
                 res[data.name] = [-1, data.name, -1, 1]    # pandas method for PathInput = -1

@@ -21,7 +21,7 @@ class RunHandler:
         
 
 
-    def input_fromschema(self, step: StepSchema) -> List[Union[PathInput, FileInput]]:
+    def input_fromschema(self, step: StepSchema) -> List[PathInput | FileInput]:
         if not bool(step.input_data):   # there are no any input data
             return []
         

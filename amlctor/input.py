@@ -1,4 +1,4 @@
-from typing import List, Union, Callable
+from typing import List, Dict
 from dataclasses import dataclass
 
 import pandas as pd
@@ -17,7 +17,7 @@ from amlctor._utils import filename2identifier
 class FileInput:
     """ Adds file from the datastore """
     def __init__(self, name: str, 
-                filename: Union[list, tuple, str],
+                filename: list | tuple | str | dict,
                 datastore_name: str, 
                 path_on_datasore: str, 
                 denv_path: str,
@@ -65,9 +65,9 @@ class FileInput:
         if not (isinstance(self.name, str) and self.name.isidentifier()):
             raise ValueError(f"Incorrect value for 'name': {self.name}")
         # filenames
-        if not isinstance(self.filenames, (list, tuple, str)):
+        if not isinstance(self.filenames, (list, tuple, str, dict)):
             raise ValueError(f"Incorrect data type for filename:" 
-                             "{type(filename)}. Should be one of: str, list, tuple or set")
+                             "{type(filename)}. Should be one of: str, list, tuple or dict")
         return True
         
     
@@ -122,7 +122,7 @@ class FileInputSchema:
     datastore_name: str
     path_on_datastore: str
     data_reference_name: str
-    files: List[str]
+    files: List[str] | Dict[str, str]
 
 
 @dataclass(frozen=True)
