@@ -219,7 +219,7 @@ class FileInputSchema:
     files: List[str]
 ```
 
-First 4 fields as previous. `files` - you can list file or files as list, which will be mounted from Datastore. If you want to get one file, pass as string, for more files - list of strings. File inputs will be assigned to variable names - generated  on the base of file name itself. You can use `FileInputSchema.files` *dict notation*, wich allows you pass `{'file_name.extention': 'variable_name', 'file_name2.extention': 'variable_name2', ...}` for map files with variable names to use. Remember that, variable names must be unique in the scope of step. When you pass multiple filename, they must be on the same path.
+First 4 fields as previous. `files` - you can list file or files as list, which will be mounted from Datastore. If you want to get one file, pass as string, for more files - list of strings. File inputs will be assigned to variable names - generated  on the base of file name itself. You can use `FileInputSchema.files` *dict notation*, which allows you pass `{'file_name.extention': 'variable_name', 'file_name2.extention': 'variable_name2', ...}` for map files with variable names to use. Remember that, variable names must be unique in the scope of step. When you pass multiple filename, they must be on the same path.
 
 **Supported file types**: `amlctor` uses `pandas` `pandas.read_...` methods for read the mounted files. At the moment, suported file types:
 
