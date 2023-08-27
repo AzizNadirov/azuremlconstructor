@@ -219,9 +219,9 @@ class FileInputSchema:
     files: List[str]
 ```
 
-First 4 fields as previous. `files` - you can list file or files as list, which will be mounted from Datastore. If you want to get one file, pass as string, for more files - list of strings. When you pass multiple filename, they must be on the same path.
+First 4 fields as previous. `files` - you can list file or files as list, which will be mounted from Datastore. If you want to get one file, pass as string, for more files - list of strings. File inputs will be assigned to variable names - generated  on the base of file name itself. You can use `FileInputSchema.files` *dict notation*, wich allows you pass `{'file_name.extention': 'variable_name', 'file_name2.extention': 'variable_name2', ...}` for map files with variable names to use. Remember that, variable names must be unique in the scope of step. When you pass multiple filename, they must be on the same path.
 
-**Supported file types**: `amlctor` uses `pandas` read methods for read the mounted files. At the moment, suported file types:
+**Supported file types**: `amlctor` uses `pandas` `pandas.read_...` methods for read the mounted files. At the moment, suported file types:
 
 ```directory
 csv, parquet, excell sheet, json
@@ -233,18 +233,16 @@ Slugged file names will be used as variable names for importing files.
 
 ### Update
 
-You can update `dataloader` according to the `settings.py` module. It can be useful when you maked some changes into `settings.py` and don't want to overwrite whole pipeline structure by scratch, in this case you can use `update`:
+You can update project according to the `settings.py`. Updates  will affect whole project if passed `--overwrite`. Otherwise, user have to choose what to do with already existing modules - `overwrite`, `skeep` or `cancel` updating. It can be useful when you maked some changes into `settings.py` and don't want to overwrite whole pipeline structure by scratch, in this case you can use `update`:
 
 ```bash
-python -m amlctor update -p <path_to_pipe> -s step_name [Optional]
+python -m amlctor update <path_to_pipe> --overwrite [Optional]
 ```
-
-`step_name` argument is optional, if not passed, updating will apply for all steps, otherwise - only for passed step.
 
 ### Rename
 
 ```bash
-python -m amlctor rename -p <path_to_pipe> -n <new_name>
+python -m amlctor rename <path_to_pipe> -n <new_name>
 ```
 
 Renames pipeline into `new_name`. Renaming pipeline means: rename pipeline project directory, change `NAME` variable in `settings.py` and edit `ENVIRONMENT_FILE` in the `.env` file.
