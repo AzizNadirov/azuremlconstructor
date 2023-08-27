@@ -1,6 +1,7 @@
 from importlib.util import spec_from_file_location
 from pathlib import Path
 import re
+from typing import List, Tuple
 
 
 	
@@ -69,7 +70,57 @@ def is_pipe(path: Path, pipe_name: str = None, is_step: bool = False) -> bool:
 			return False			# not fount
 		else:
 			raise ValueError(f"'is_step' should be boolean not '{type(is_step)}'")
-			
+
+
+
+def is_step(path: Path, stdout: bool = True) -> bool:
+	""" 
+		Check if path is a step 
+		Params:
+			path: path to the step
+			stdout: if True, print result
+	"""
+	if not path.exists():	return False
+	# check if parent is pipeline
+	pipe_path = path.parent
+	settings = get_settingspy(pipe_path)
+	if stdout:
+		if (path / settings['SCRIPT_MODULE_NAME']).exists() and \
+			(path / settings['AML_MODULE_NAME']).exists() and \
+			(path / settings['DATALOADER_MODULE_NAME']).exists():
+			return True
+		return False
+	else:	# the same thing, but with prints
+		step_name = path.name.split('.')[0]
+		if (path / settings['SCRIPT_MODULE_NAME']).exists():
+			if (path / settings['AML_MODULE_NAME']).exists():
+				if (path / settings['DATALOADER_MODULE_NAME']).exists():
+					print(f"\t{step_name} is correct step: OK")
+					return True
+				else:
+					print(f"\t{path / settings['DATALOADER_MODULE_NAME']} doesn't exist")
+					return False
+			else:
+				print(f"\t{path / settings['AML_MODULE_NAME']} doesn't exist")
+				return False
+		else:
+			print(f"\t{path / settings['SCRIPT_MODULE_NAME']} doesn't exist")
+			return False
+		
+
+
+
+
+def has_step(path: Path, step_name: str) -> bool:
+	""" check if path has the step with `step_name` 
+		Params:
+			path: path of pipeline
+			step_name: name of the step
+	"""
+	return (path / step_name).exists() and is_step(path=path/step_name)
+
+
+
 
 def is_pipe_raise(path: Path, pipe_name: str = None, is_step: bool = False) -> bool:
 	""" The same as `is_pipe` but raises exceptions in False casees """
@@ -122,6 +173,24 @@ def filename2identifier(filename: str, drop_ext=True) -> str:
     return identifier
 	
 		 
+
+def get_not_applied_steps(path: Path) -> Tuple[str]:
+	"""  
+		Check steps. Returns not applied step names.
+		Params:
+			path: Path - path of pipeline
+		returns: Tuple[str] - tuple of stepnames that are not implemented 
+
+	"""
+	unapplieds = []
+	settings = get_settingspy(path)
+	steps = settings['STEPS'].copy()
+	for step in steps:
+		if not has_step(path, step.name):
+			unapplieds.append(step.name)
+	return tuple(unapplieds)
+
+
 
 
 

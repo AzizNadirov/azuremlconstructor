@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List, Literal
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -21,53 +22,91 @@ class StructureApply:
         """ path which contains settings directory """
         assert isinstance(path, Path) and path.is_dir(), f"incorrect dir: {path}"
         self.path = path
+        self.settingspy = get_settingspy(self.path)
+        self.pipe_name: str = self.path.name
         
 
-    def make_step_dirs(self):
+    def make_step_dirs(self, for_steps: list=None, overwrite: bool=False):
         """ 
             Creates step dirs and files based on the `settings.py` file.
+            Params:
+                for_steps: List[str] - if passes, creates only for these steps
+                overwrite: bool - if True, overwrites files
         """
-        for step in self.settingspy['STEPS']:
-            step_path = self.path / step.name
-            step_path.mkdir(mode=0o770, exist_ok=True)                 # create dir for pipe step
-            self.create_files(step, step_path)          # create files inside step dir
-
-
-    def create_files(self, step: StepSchema, step_path: Path):
-        """ creates modules """
-        # create script.py
-        script_name = self.settingspy['SCRIPT_MODULE_NAME']
-        script_name = self.ext(script_name, True) 
-        if (step_path / script_name).exists():
-            response = input(f"file '{(step_path / script_name)}' already exists. Type- overwrite: o; skip: s; cancel: c: ")
-            if response.lower().strip() in ('o', 'overwrite'):
-                (step_path / script_name).touch(exist_ok=True)
-            elif response.lower().strip() in ('s', 'skip'):
-                pass
-
-            elif response.lower().strip() in ('c', 'cancel'):
-                raise SystemExit("Cancelled.")
-            else:
-                raise ValueError(f"Incorrect answer '{response}'. It must be one of [o, s, c]")
+        if not for_steps:
+            for step in self.settingspy['STEPS']:
+                step_path = self.path / step.name
+                step_path.mkdir(mode=0o770, exist_ok=True)                 # create dir for pipe step
+                self.create_files(step, step_path, overwrite)          # create files inside step dir
         else:
-            (step_path / script_name).touch(exist_ok=True)
-            
-        # create data_loader.py
-        dataloader_name = self.settingspy['DATALOADER_MODULE_NAME'] 
-        dataloader_name = self.ext(dataloader_name, True)                 # add .py
-        content, keys = StructureApply.create_dataloader_content(step=step)
-        
-        with (step_path / dataloader_name).open(mode='w+') as dataloader:
-            dataloader.write(content)
+            for step in self.settingspy['STEPS']:           # do only for passed steps
+                if not step.name in for_steps:
+                    continue
+                step_path = self.path / step.name
+                step_path.mkdir(mode=0o770, exist_ok=True)                 # create dir for pipe step
+                self.create_files(step, step_path, overwrite)          # create files inside step dir
 
-        # create aml.py
-        aml_name = self.settingspy['AML_MODULE_NAME']
-        aml_name = self.ext(aml_name, True)
-        with (step_path / aml_name).open(mode='w+') as aml:
-            aml_t = StructureApply.jinva_env.get_template('aml')
-            dataloader_name = self.ext(dataloader_name, yes=False)     # no extention for importing in template
-            content = aml_t.render(dataloader_name=dataloader_name, keys=keys)
-            aml.write(content)
+
+    def create_files(self, step: StepSchema, step_path: Path, overwrite: bool):
+        """ creates modules """
+        def create(kind: Literal['aml', 'script', 'dataloader']) -> None:
+            if kind == 'aml':
+                # (step_path / self.settingspy['AML_MODULE_NAME']).touch(exist_ok=True)
+                aml_name = self.settingspy['AML_MODULE_NAME']
+                aml_name = self.ext(aml_name, True)
+                with (step_path / aml_name).open(mode='w+') as aml:
+                    aml_t = StructureApply.jinva_env.get_template('aml')
+                    dataloader_name = self.ext(dataloader_name, yes=False)     # no extention for importing in template
+                    content = aml_t.render(dataloader_name=dataloader_name, keys=keys)
+                    aml.write(content)
+                    
+            elif kind == 'dataloader':
+                # (step_path / self.settingspy['DATALOADER_MODULE_NAME']).touch(exist_ok=True)
+                dataloader_name = self.settingspy['DATALOADER_MODULE_NAME'] 
+                dataloader_name = self.ext(dataloader_name, True)                 # add .py
+                content, keys = StructureApply.create_dataloader_content(step=step)
+                with (step_path / dataloader_name).open(mode='w+') as dataloader:
+                    dataloader.write(content)
+
+            elif kind == 'script':
+                # (step_path / self.settingspy['SCRIPT_MODULE_NAME']).touch(exist_ok=True)
+                script_name = self.settingspy['SCRIPT_MODULE_NAME'] 
+                script_name = self.ext(script_name, True)
+                script_t = StructureApply.jinva_env.get_template('aml')
+                content = script_t.render()
+                with (step_path / script_name).open(mode='w+') as script:
+                    script.write(content)
+
+
+        modules = {'script':    self.settingspy['SCRIPT_MODULE_NAME'], 
+                   'aml':       self.settingspy['AML_MODULE_NAME'], 
+                   'dataloader':self.settingspy['DATALOADER_MODULE_NAME']}
+        
+        
+        if overwrite is False:
+            for kind, file_name in modules.items():
+                file_name = self.ext(file_name, True) 
+                if (step_path / file_name).exists():
+                    response = input(f"File '{(step_path / file_name)}' already exists. \nType- overwrite: [o]; skip: [s]; cancel: [c]: ")
+                    if response.lower().strip() in ('o', 'overwrite'):
+                        (step_path / file_name).touch(exist_ok=True)
+                        create(kind=kind)
+                    elif response.lower().strip() in ('s', 'skip'):
+                        continue
+                    elif response.lower().strip() in ('c', 'cancel'):
+                        raise SystemExit("Cancelled.")
+                    else:
+                        raise ValueError(f"Incorrect answer '{response}'. It must be one of [o, s, c]")
+                else:
+                    (step_path / file_name).touch(exist_ok=True)
+        else:
+            # create data_loader.py
+            create(lind='dataloader')
+            # create aml.py
+            create(kind='aml')
+            # create script.py
+            create(kind='script')
+            
 
 
     
@@ -138,8 +177,6 @@ class StructureApply:
         
 
     def start(self):
-        self.settingspy = get_settingspy(self.path)
-        self.pipe_name: str = self.path.name
         self.make_step_dirs()
 
 

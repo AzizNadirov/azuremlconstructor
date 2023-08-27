@@ -21,7 +21,7 @@ def parse_args():
     init_command.add_argument('-n', '--name', type=str, required=True,
                               help="Name of pipeline. Also, will be used as project directory name")
     
-    init_command.add_argument('-p', '--path', type=str, required=True, default='.',
+    init_command.add_argument('path', type=str,  default='.', nargs='?',
                               help="Path where pipeline will be initialised. '.' for specify cwd.")
     
     init_command.add_argument('-e', '--env', type=str, required=False,
@@ -32,8 +32,8 @@ def parse_args():
     apply_command = commands.add_parser('apply',
                                         help='Apply configs from the settings file and build pipeline.')
     
-    apply_command.add_argument('-p', '--path', type=str, required=True, default='.',
-                               help="Path to the pipeline. '.' for choose cwd.")
+    apply_command.add_argument('path', type=str, default='.', nargs='?',
+                                help="Path to the pipeline. '.' for choose cwd.")
 
 
 
@@ -41,7 +41,7 @@ def parse_args():
     rename_command = commands.add_parser('rename',
                                          
                                          help='Rename pipeline.')
-    rename_command.add_argument('-p', '--path', type=str, required=True,
+    rename_command.add_argument('path', type=str, default='.', nargs='?',
                                 help="Path to the pipeline.")
     
     rename_command.add_argument('-n', '--new_name', type=str, required=True,
@@ -51,12 +51,11 @@ def parse_args():
 
     update_command = commands.add_parser('update',
                                          help = "Update pipeline or step regarding to settings")
-    update_command.add_argument('-p', '--path', type=str, required=True,
-                                help="Path to the pipeline.")
-    update_command.add_argument('-s', '--step', type=str, required=False,
-                                help="Apply updatng only for the passed step.")
     
-
+    update_command.add_argument('path', type=str, default='.', nargs='?',
+                                    help="Path to the pipeline.")
+    update_command.add_argument("--overwrite", help="overwrite all steps", required=False, action='store_true')
+    
 
 
     denv_parser = commands.add_parser("denv", help="Manage your EnvBank")
@@ -198,7 +197,6 @@ class ArgsHandler:
             from amlctor.apply.apply import ApplyHandler
 
             path: Path =    ArgsHandler.valid_path(self.args.path)  # check only for existence
-
             handler = ApplyHandler(path=path)
 
 
@@ -207,8 +205,7 @@ class ArgsHandler:
             from amlctor.run.run import RunHandler
 
             path: Path =    ArgsHandler.valid_path(self.args.path)  # check only for existence
-
-            handler = RunHandler(path=path)
+            handler =       RunHandler(path=path)
 
 
         elif command == 'rename':
@@ -217,7 +214,6 @@ class ArgsHandler:
 
             path: Path =    ArgsHandler.valid_path(self.args.path)
             new_name: str = self.args.new_name
-
             handler = RenameHandler(path=path, 
                                     new_name=new_name)
             
@@ -225,10 +221,9 @@ class ArgsHandler:
             """ update  -p -s """
             from amlctor.update.update import UpdateHandler
 
-            path: Path =                    ArgsHandler.valid_path(self.args.path)
-            for_step: Union[str, bool] =     self.args.step
-
-            handler = UpdateHandler(path=path, for_step=for_step)
+            path: Path = ArgsHandler.valid_path(self.args.path)
+            overwrite = self.args.overwrite
+            handler = UpdateHandler(path=path, overwrite=overwrite)
 
 
         elif command == 'denv':
