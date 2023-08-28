@@ -3,9 +3,9 @@ from unittest import TestCase
 import os
 # import json
 
-from amlctor.confs.configs import BANK_DIR
+from azuremlconstructor.confs.configs import BANK_DIR
 
-from amlctor.init.init import EnvBank
+from azuremlconstructor.init.init import EnvBank
 
 
 class TestEnvBank(TestCase):

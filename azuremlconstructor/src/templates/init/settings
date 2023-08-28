@@ -1,5 +1,5 @@
-from amlctor.input import FileInputSchema, PathInputSchema
-from amlctor.core import StepSchema
+from azuremlconstructor.input import FileInputSchema, PathInputSchema
+from azuremlconstructor.core import StepSchema
 
 # --------------------------| Module Names |----------------------------
 AML_MODULE_NAME: str =       'aml'

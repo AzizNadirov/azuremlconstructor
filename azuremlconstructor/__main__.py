@@ -1,4 +1,4 @@
-from amlctor.init.args_handling import parse_args, ArgsHandler
+from azuremlconstructor.init.args_handling import parse_args, ArgsHandler
 
 
 

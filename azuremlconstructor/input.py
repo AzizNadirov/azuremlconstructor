@@ -7,9 +7,9 @@ from azureml.core import Workspace, Datastore
 from azureml.data.datapath import DataPath, DataPathComputeBinding
 from azureml.core.authentication import InteractiveLoginAuthentication
 
-from amlctor.denv.dot_env_loader import get_env
+from azuremlconstructor.denv.dot_env_loader import get_env
 
-from amlctor._utils import filename2identifier
+from azuremlconstructor._utils import filename2identifier
 
 
 

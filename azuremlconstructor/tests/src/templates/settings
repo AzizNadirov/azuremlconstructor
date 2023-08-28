@@ -1,4 +1,4 @@
-from amlctor.core import FileInputSchema, PathInputSchema, StepSchema
+from azuremlconstructor.core import FileInputSchema, PathInputSchema, StepSchema
 
 # module names:
 AML_MODULE_NAME: str =       '{{AML_MODULE_NAME}}'

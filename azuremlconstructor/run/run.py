@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import List, Union
 
-from amlctor._utils import get_settingspy, is_pipe
-from amlctor.core import PathInput, FileInput, Step, PathInputSchema, FileInputSchema, StepSchema, Pipe
+from azuremlconstructor._utils import get_settingspy, is_pipe
+from azuremlconstructor.core import PathInput, FileInput, Step, PathInputSchema, FileInputSchema, StepSchema, Pipe
 
 
 

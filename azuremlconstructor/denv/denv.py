@@ -4,9 +4,9 @@ import getpass
 
 from dotenv import dotenv_values
 
-from amlctor.init.init import EnvBank
-from amlctor.confs.configs import BANK_DIR
-from amlctor._utils import valid_path
+from azuremlconstructor.init.init import EnvBank
+from azuremlconstructor.confs.configs import BANK_DIR
+from azuremlconstructor._utils import valid_path
 
 
 
@@ -26,7 +26,7 @@ class DenvHandler:
     def validate(self):
         """ validate and run method """
         subcommand = self.args.get('_subcommand')
-        if not subcommand:                          # amlctor denv - without subcommand
+        if not subcommand:                          # azuremlconstructor denv - without subcommand
             raise SystemExit("denv needs subcommand. Run with '-h' for more info")
         if subcommand == 'create':
             if self.args['interactive'] is False:

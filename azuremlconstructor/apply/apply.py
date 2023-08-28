@@ -3,12 +3,12 @@ from typing import List, Literal
 
 from jinja2 import Environment, FileSystemLoader
 
-from amlctor.core import StepSchema
-from amlctor.confs.configs import TEMPLATES_DIR, STEP_NAME_MAX, STEP_NAME_MIN, STEP_NAME_KEYWORDS
-from amlctor._utils import get_settingspy, is_pipe, check_filename, filename2identifier
-from amlctor import exceptions as exceptions
-from amlctor import schemas
-from amlctor.input import FileInputSchema, PathInputSchema
+from azuremlconstructor.core import StepSchema
+from azuremlconstructor.confs.configs import TEMPLATES_DIR, STEP_NAME_MAX, STEP_NAME_MIN, STEP_NAME_KEYWORDS
+from azuremlconstructor._utils import get_settingspy, is_pipe, check_filename, filename2identifier
+from azuremlconstructor import exceptions as exceptions
+from azuremlconstructor import schemas
+from azuremlconstructor.input import FileInputSchema, PathInputSchema
 
 
 

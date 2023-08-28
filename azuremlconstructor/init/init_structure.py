@@ -1,7 +1,7 @@
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 
-from amlctor.confs.configs import BASE_DIR, TEMPLATES_DIR
+from azuremlconstructor.confs.configs import BASE_DIR, TEMPLATES_DIR
 
 
 

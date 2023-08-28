@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import Union
 
-from amlctor.apply.apply import StructureApply
+from azuremlconstructor.apply.apply import StructureApply
 
-from amlctor._utils import is_pipe, get_settingspy, get_not_applied_steps
-from amlctor.exceptions import PathHasNoPipelineException, PipelineHasNoTheStepException
-from amlctor.schemas import PathHasNoPipelineSchema, PipelineHasNoTheStepSchema
+from azuremlconstructor._utils import is_pipe, get_settingspy, get_not_applied_steps
+from azuremlconstructor.exceptions import PathHasNoPipelineException, PipelineHasNoTheStepException
+from azuremlconstructor.schemas import PathHasNoPipelineSchema, PipelineHasNoTheStepSchema
 
 
 

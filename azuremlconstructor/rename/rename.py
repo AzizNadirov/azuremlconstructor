@@ -1,9 +1,9 @@
 from pathlib import Path 
 
-from amlctor._utils import get_settingspy, is_pipe
-from amlctor.init.args_handling import ArgsHandler
-from amlctor import exceptions
-from amlctor import schemas
+from azuremlconstructor._utils import get_settingspy, is_pipe
+from azuremlconstructor.init.args_handling import ArgsHandler
+from azuremlconstructor import exceptions
+from azuremlconstructor import schemas
 
 
 

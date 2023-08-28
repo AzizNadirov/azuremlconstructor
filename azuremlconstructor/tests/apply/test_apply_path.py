@@ -4,8 +4,8 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
-from amlctor.confs.configs import BASE_DIR
-from amlctor.__main__ import main
+from azuremlconstructor.confs.configs import BASE_DIR
+from azuremlconstructor.__main__ import main
 
 
 
@@ -20,7 +20,7 @@ class TestApply(TestCase):
         self.pipes_dir = pipes_dir
 
         # init pipe
-        args = ['amlctor','init', '-n', pipe_name, '-p', pipes_dir]
+        args = ['azuremlconstructor','init', '-n', pipe_name, '-p', pipes_dir]
         @patch('sys.argv', args)
 
         def init_pipe():
@@ -62,7 +62,7 @@ class TestApply(TestCase):
                 f.write(settings_content)
             
         
-        args = ['amlctor', 'apply', '-p', str(self.pipes_dir / self.pipe_name)]
+        args = ['azuremlconstructor', 'apply', '-p', str(self.pipes_dir / self.pipe_name)]
         @patch('sys.argv', args)
         def do_apply():
             fill_settings(path=self.pipes_dir / self.pipe_name)

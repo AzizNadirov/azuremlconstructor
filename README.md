@@ -2,8 +2,8 @@
 
 ## Azure Machine Learning Pipeline Constructor
 
-`aml-constructor` - or shortly - `amlctor` allows you to create Azure Machine Learning(shortly - `AML`)  [Pipeline](https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines?view=azureml-api-2). `amlctor` based on the [Azure Machine Learning SDK](https://learn.microsoft.com/en-us/azure/machine-learning/v1/how-to-create-machine-learning-pipelines?view=azureml-api-1&preserve-view=true), and implements main operations of the Pipeline creation. You can create pipelines with AML Steps, which can take DataInputs.
-In amlctor pipeline creation consists of 3 steps:
+`aml-constructor` - or shortly - `azuremlconstructor` allows you to create Azure Machine Learning(shortly - `AML`)  [Pipeline](https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines?view=azureml-api-2). `azuremlconstructor` based on the [Azure Machine Learning SDK](https://learn.microsoft.com/en-us/azure/machine-learning/v1/how-to-create-machine-learning-pipelines?view=azureml-api-1&preserve-view=true), and implements main operations of the Pipeline creation. You can create pipelines with AML Steps, which can take DataInputs.
+In azuremlconstructor pipeline creation consists of 3 steps:
 
 ### 0. Preporation
 
@@ -11,10 +11,10 @@ It's highly recommended to create separated folder your pipeline projects. And a
 
 ### 1. Pipeline initialisation
 
-Something like project initialisation. You choose pipeline name, directory and credential `.env` file. For storing amlctor has denv storage - or **EnvBank**. Initialise pipeline as:
+Something like project initialisation. You choose pipeline name, directory and credential `.env` file. For storing azuremlconstructor has denv storage - or **EnvBank**. Initialise pipeline as:
 
 ```bash
-python -m amlctor init [path] -n myfirstpipe -e denv_name
+python -m azuremlconstructor init [path] -n myfirstpipe -e denv_name
 ```
 
 Here `-n` shows pipeline name, `path` - directory in which pipeline will be created - by default = `.`, `-e` - dotenv name. I will talk about denv's a little bit later. After this, in the passed directory will be created named as pipeline passed name.
@@ -35,8 +35,8 @@ myfirstpipe
  This module contains all necessary configuractions:
 
  ```python
-from amlctor.input import FileInputSchema, PathInputSchema
-from amlctor.core import StepSchema
+from azuremlconstructor.input import FileInputSchema, PathInputSchema
+from azuremlconstructor.core import StepSchema
 
 # --------------------------| Module Names |----------------------------
 AML_MODULE_NAME: str =       'aml'
@@ -109,7 +109,7 @@ After filling settings, you have to apply your settings.
 ### 2. **Apply** Settings
 
 ```bash
-python -m amlctor apply <path_to_pipeline>
+python -m azuremlconstructor apply <path_to_pipeline>
 ```
 
 Applying pipeline means - create structure based on the `settings.py` module. For each step will be created directory inside pipeline directory and each directory will contain: `aml.py`, `dataloader.py` and `script.py`.
@@ -138,7 +138,7 @@ myfirstpipe
 ### 3. **Run** Pipeline
 
 bash```
-python -m amlctor run <path_to_pipeline>```
+python -m azuremlconstructor run <path_to_pipeline>```
 
 This command will publish your pipeline into your AML. Additionally, can submit according to the `EXTRA.submit` option.
 
@@ -151,7 +151,7 @@ For work on AML pipeline you have to use your credentials: `workspace_name`, `re
 You can create denv in 2 ways: pass path of existing `.env` file or in interactive mode - via terminal. In the first case:
 
 ```bash
-python -m amlctor denv create -p <path_to_.env file> -n <new_name>
+python -m azuremlconstructor denv create -p <path_to_.env file> -n <new_name>
 ```
 
 Then you'll type new password twise for encryption. After that, denv will save into local storage and you will be able to use it for future pipeline creation.
@@ -159,7 +159,7 @@ Then you'll type new password twise for encryption. After that, denv will save i
 For create denv in interactive mode, you have to pass `-i` or `--interactive` arg:
 
 ```bash
-python -m amlctor denv create -i
+python -m azuremlconstructor denv create -i
 ```
 
 After that you have to type each asked field and set password.
@@ -169,13 +169,13 @@ After that you have to type each asked field and set password.
 For retrieve denv use:
 
 ```bash
-python -m amlctor denv get -n <name_of_denv>
+python -m azuremlconstructor denv get -n <name_of_denv>
 ```
 
 For list all existing denv names add -`-all` argument:
 
 ```bash
-python -m amlctor denv get --all
+python -m azuremlconstructor denv get --all
 ```
 
 **Note**: *for view the denv, you have to type password*.
@@ -185,12 +185,12 @@ python -m amlctor denv get --all
 For removing denv:
 
 ```bash
-python -m amlctor denv rm -n <name_of_denv>
+python -m azuremlconstructor denv rm -n <name_of_denv>
 ```
 
 ## DataInputs
 
-DataInputs can be files or paths from [AML Datastore](https://learn.microsoft.com/en-us/python/api/azureml-core/azureml.core.datastore.datastore?view=azure-ml-py). Whole process is creating [DataReference](https://learn.microsoft.com/en-us/python/api/azureml-core/azureml.data.data_reference.datareference?view=azure-ml-py) object behind the scenes... All inputs will be loaded in the `dataloader.py` and imported into `aml.py` module. Lets look at `amlctor` DataInputs.
+DataInputs can be files or paths from [AML Datastore](https://learn.microsoft.com/en-us/python/api/azureml-core/azureml.core.datastore.datastore?view=azure-ml-py). Whole process is creating [DataReference](https://learn.microsoft.com/en-us/python/api/azureml-core/azureml.data.data_reference.datareference?view=azure-ml-py) object behind the scenes... All inputs will be loaded in the `dataloader.py` and imported into `aml.py` module. Lets look at `azuremlconstructor` DataInputs.
 
 ### PathInputSchema
 
@@ -221,7 +221,7 @@ class FileInputSchema:
 
 First 4 fields as previous. `files` - you can list file or files as list, which will be mounted from Datastore. If you want to get one file, pass as string, for more files - list of strings. File inputs will be assigned to variable names - generated  on the base of file name itself. You can use `FileInputSchema.files` *dict notation*, which allows you pass `{'file_name.extention': 'variable_name', 'file_name2.extention': 'variable_name2', ...}` for map files with variable names to use. Remember that, variable names must be unique in the scope of step. When you pass multiple filename, they must be on the same path.
 
-**Supported file types**: `amlctor` uses `pandas` `pandas.read_...` methods for read the mounted files. At the moment, suported file types:
+**Supported file types**: `azuremlconstructor` uses `pandas` `pandas.read_...` methods for read the mounted files. At the moment, suported file types:
 
 ```directory
 csv, parquet, excell sheet, json
@@ -236,19 +236,19 @@ Slugged file names will be used as variable names for importing files.
 You can update project according to the `settings.py`. Updates  will affect whole project if passed `--overwrite`. Otherwise, user have to choose what to do with already existing modules - `overwrite`, `skeep` or `cancel` updating. It can be useful when you maked some changes into `settings.py` and don't want to overwrite whole pipeline structure by scratch, in this case you can use `update`:
 
 ```bash
-python -m amlctor update <path_to_pipe> --overwrite [Optional]
+python -m azuremlconstructor update <path_to_pipe> --overwrite [Optional]
 ```
 
 ### Rename
 
 ```bash
-python -m amlctor rename <path_to_pipe> -n <new_name>
+python -m azuremlconstructor rename <path_to_pipe> -n <new_name>
 ```
 
 Renames pipeline into `new_name`. Renaming pipeline means: rename pipeline project directory, change `NAME` variable in `settings.py` and edit `ENVIRONMENT_FILE` in the `.env` file.
 
 ### Some usefull utils
 
-`amlctor.utils` module has a banch of usefull tools, that can be usefull.
+`azuremlconstructor.utils` module has a banch of usefull tools, that can be usefull.
     - `utils.upload_data(datastore_name: str, files: List[str], target_path: str=".")` - uploads file(s) to the blob;
     - *recursive read_concat* functions: `utils.read_concat_csvfiles: List[str], return_types: bool=False, sep: str = ','`, `utils.read_concat_parquet(files: List[str], return_types: bool=False, engine: Literal['fastparquet', 'pyarrow'] = 'fastparquet')`, `utils.recursive_glob_list(folders: List[str], file_ext: str='parquet')`. Each function has doc

@@ -8,7 +8,7 @@ import getpass
 import pydantic
 from pydantic import BaseModel
 
-from amlctor.confs.configs import BANK_DIR
+from azuremlconstructor.confs.configs import BANK_DIR
 
 from .init_structure import StructureInit
 
@@ -109,8 +109,8 @@ class EnvBank:
     
 
     def get_service_name_for(self, name: str=None)->str:
-        if name:    return f"amlctordenv__{name}"
-        else:       return f"amlctordenv__{self.name}"
+        if name:    return f"azuremlconstructordenv__{name}"
+        else:       return f"azuremlconstructordenv__{self.name}"
 
 
     def save(self, password: str):

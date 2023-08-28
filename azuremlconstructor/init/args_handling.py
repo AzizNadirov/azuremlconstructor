@@ -3,11 +3,11 @@ from pathlib import Path
 from typing import Union
 import re
 
-from amlctor.init.init import EnvBank
+from azuremlconstructor.init.init import EnvBank
 
 
 def parse_args():
-    parser = ArgumentParser(description="Parse arguments for amlctor.", prog='amlctor')
+    parser = ArgumentParser(description="Parse arguments for azuremlconstructor.", prog='azuremlconstructor')
     commands = parser.add_subparsers(title='main commands', dest='command')
 
     run_command = commands.add_parser('run',
@@ -132,7 +132,7 @@ class ArgsHandler:
 
     @staticmethod
     def valid_select_env(name: str) -> EnvBank:
-        from amlctor.confs.configs import BANK_DIR
+        from azuremlconstructor.confs.configs import BANK_DIR
 
         if name is None:    # env not passed
             return None
@@ -193,7 +193,7 @@ class ArgsHandler:
 
         elif command == 'apply':
             """ apply -p """
-            from amlctor.apply.apply import ApplyHandler
+            from azuremlconstructor.apply.apply import ApplyHandler
 
             path: Path =    ArgsHandler.valid_path(self.args.path)  # check only for existence
             handler = ApplyHandler(path=path)
@@ -201,7 +201,7 @@ class ArgsHandler:
 
         elif command == 'run':
             """ run -p """
-            from amlctor.run.run import RunHandler
+            from azuremlconstructor.run.run import RunHandler
 
             path: Path =    ArgsHandler.valid_path(self.args.path)  # check only for existence
             handler =       RunHandler(path=path)
@@ -209,7 +209,7 @@ class ArgsHandler:
 
         elif command == 'rename':
             """ rename  -p -n """
-            from amlctor.rename.rename import RenameHandler
+            from azuremlconstructor.rename.rename import RenameHandler
 
             path: Path =    ArgsHandler.valid_path(self.args.path)
             new_name: str = self.args.new_name
@@ -218,7 +218,7 @@ class ArgsHandler:
             
         elif command == 'update':
             """ update  -p -s """
-            from amlctor.update.update import UpdateHandler
+            from azuremlconstructor.update.update import UpdateHandler
 
             path: Path = ArgsHandler.valid_path(self.args.path)
             overwrite = self.args.overwrite
@@ -231,7 +231,7 @@ class ArgsHandler:
                 denv get -n -a
                 denv rm -n
             """
-            from amlctor.denv.denv import DenvHandler
+            from azuremlconstructor.denv.denv import DenvHandler
             args = {}
             for k in vars(self.args):
                 args[k] = getattr(self.args, k)
