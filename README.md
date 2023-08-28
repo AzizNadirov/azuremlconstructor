@@ -7,7 +7,7 @@ In amlctor pipeline creation consists of 3 steps:
 
 ### 0. Preporation
 
-It's highly recommended to create separated folder your pipeline projects. And also, virtual environment(venv). You can create separated venv for future AML projects. It's specially useful if you are working with different kinds of libraries: data science oriented, web and so on.
+It's highly recommended to create separated folder your pipeline projects. And also, virtual environment(venv) - [article on RealPython](https://realpython.com/python-virtual-environments-a-primer/). You can create separated venv for future AML projects. It's specially useful if you are working with different kinds of libraries: data science oriented, web and so on.
 
 ### 1. Pipeline initialisation
 
@@ -100,7 +100,7 @@ Lets look at the variables we have here.
 
 There are extra - additional options that can be helpfull.
 
-- `continue_on_step_failure` - will continue in error case
+- `continue_on_step_failure` - Indicates whether to continue execution of other steps in the PipelineRun if a step fails; the default is false. If True, only steps that have no dependency on the output of the failed step will continue execution.
   
 - `submit` - submit options. Pipeline will be submitted, if `is_active` is `True`.
 
