@@ -96,8 +96,7 @@ class RunHandler:
 
     def publish(self, pipeline: Pipe):
         submit_options = self.settingspy['EXTRA']['submit']
-        if submit_options.get('is_active') is True:
-            pipeline._publish(submit=submit_options)
+        pipeline._publish(submit=submit_options)
 
 
 
