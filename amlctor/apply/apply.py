@@ -204,7 +204,6 @@ class StructureApply:
         return content, list(res.keys())
     
         
-
     def start(self):
         self.make_step_dirs()
 

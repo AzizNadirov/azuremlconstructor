@@ -82,7 +82,7 @@ STEPS = [step1, ]
 
 EXTRA = {
             'continue_on_step_failure': False,
-            'submit': {'is_active': True, 'experiment_name': 'DebugPipeline', 'job_name': NAME, 'tags': None, 'kwargs': None}
+            'submit': {'is_active': False, 'experiment_name': 'DebugPipeline', 'job_name': NAME, 'tags': None, 'kwargs': None}
 }
  ```
 
@@ -246,3 +246,9 @@ python -m amlctor rename <path_to_pipe> -n <new_name>
 ```
 
 Renames pipeline into `new_name`. Renaming pipeline means: rename pipeline project directory, change `NAME` variable in `settings.py` and edit `ENVIRONMENT_FILE` in the `.env` file.
+
+### Some usefull utils
+
+`amlctor.utils` module has a banch of usefull tools, that can be usefull.
+    - `utils.upload_data(datastore_name: str, files: List[str], target_path: str=".")` - uploads file(s) to the blob;
+    - *recursive read_concat* functions: `utils.read_concat_csvfiles: List[str], return_types: bool=False, sep: str = ','`, `utils.read_concat_parquet(files: List[str], return_types: bool=False, engine: Literal['fastparquet', 'pyarrow'] = 'fastparquet')`, `utils.recursive_glob_list(folders: List[str], file_ext: str='parquet')`. Each function has doc

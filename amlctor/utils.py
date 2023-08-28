@@ -78,6 +78,7 @@ def read_concat_excel(files: List[str], return_types: bool=False):
     else:
         return df
 
+
 def recursive_glob_list(folders: List[str], file_ext: str='parquet'):
     """ Takes a list of folders and returns a list of files recursively """
     files = []
